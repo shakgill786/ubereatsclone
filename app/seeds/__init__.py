@@ -1,28 +1,47 @@
 from flask.cli import AppGroup
-from .users import seed_users, undo_users
+from app.models import db, User
+from sqlalchemy.sql import text
+import os
 
-from app.models.db import db, environment, SCHEMA
+# Get environment variables
+environment = os.getenv("FLASK_ENV")
+SCHEMA = os.environ.get("SCHEMA")
 
-# Creates a seed group to hold our commands
-# So we can type `flask seed --help`
+# Create a seed group to allow CLI commands: `flask seed all` & `flask seed undo`
 seed_commands = AppGroup('seed')
 
+# ✅ FUNCTION TO SEED USERS
+def seed_users():
+    users = [
+        User(username="shak", email="shak@example.com", hashed_password="hashed_password_1"),
+        User(username="emma", email="emma@example.com", hashed_password="hashed_password_2"),
+        User(username="sehrish", email="sehrish@example.com", hashed_password="hashed_password_3")
+    ]
 
-# Creates the `flask seed all` command
+    db.session.add_all(users)
+    db.session.commit()
+
+# ✅ FUNCTION TO UNDO USERS (for reseeding)
+def undo_users():
+    if environment == "production":
+        db.session.execute(text(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;"))
+    else:
+        db.session.execute(text("DELETE FROM users"))
+
+    db.session.commit()
+
+# ✅ SEED COMMAND: RUN ALL SEEDS
 @seed_commands.command('all')
 def seed():
     if environment == 'production':
-        # Before seeding in production, you want to run the seed undo 
-        # command, which will  truncate all tables prefixed with 
-        # the schema name (see comment in users.py undo_users function).
-        # Make sure to add all your other model's undo functions below
-        undo_users()
+        db.session.execute(text(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;"))
+        db.session.commit()
+    
     seed_users()
-    # Add other seed functions here
 
-
-# Creates the `flask seed undo` command
+# ✅ SEED COMMAND: UNDO ALL SEEDS
 @seed_commands.command('undo')
 def undo():
     undo_users()
+
     # Add other undo functions here
