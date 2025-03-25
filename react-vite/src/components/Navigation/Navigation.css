@@ -9,17 +9,17 @@ body {
 /* Navbar Styling */
 .navbar {
   display: flex;
-  justify-content: space-between; /* Logo on the left, buttons on the right */
-  align-items: center; /* Vertically align items */
+  justify-content: space-between;
+  align-items: center;
   background-color: #192231;
   padding: 10px 20px;
   border-bottom: 2px solid #b79a6d;
-  flex-wrap: nowrap; /* Prevent stacking */
+  flex-wrap: nowrap;
 }
 
 /* Logo */
 .navbar-logo {
-  flex: 0 0 auto; /* Prevent resizing */
+  flex: 0 0 auto;
 }
 
 .navbar-logo img.logo {
@@ -39,7 +39,7 @@ body {
 
 /* Centered Title */
 .navbar-title {
-  flex-grow: 1; /* Push logo and buttons to opposite ends */
+  flex-grow: 1;
   text-align: center;
   font-family: 'Georgia', serif;
   font-size: 2rem;
@@ -53,17 +53,13 @@ body {
   white-space: nowrap;
 }
 
-/* Profile/Auth Buttons */
+/* Navbar Links */
 .navbar-links {
   display: flex;
   align-items: center;
   gap: 15px;
-  justify-content: flex-end; /* Ensure buttons stay on the right */
-  flex: 0 0 auto; /* Prevent buttons from growing */
-}
-
-.profile-button-container {
-  position: relative;
+  justify-content: flex-end;
+  flex: 0 0 auto;
 }
 
 /* Profile Dropdown Styling */
@@ -106,6 +102,10 @@ ul.profile-dropdown li:hover {
 }
 
 /* Profile Button Styling */
+.profile-button-container {
+  position: relative;
+}
+
 .profile-button-container button {
   background: linear-gradient(135deg, #ffcc00, #ff6f61);
   color: white;
@@ -125,10 +125,34 @@ ul.profile-dropdown li:hover {
   box-shadow: 0px 8px 15px rgba(255, 215, 0, 0.5);
 }
 
-/* Responsive Design */
+/* Home Link */
+.navbar a {
+  color: #fff;
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: goldenrod;
+}
+
+/* Logged-in username and logout layout */
+.nav-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* space between username and logout button */
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-transform: capitalize; /* Capitalizes first letter */
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .navbar {
-    flex-wrap: nowrap; /* Keep elements in one row */
+    flex-wrap: nowrap;
   }
 
   .navbar-logo img.logo {
