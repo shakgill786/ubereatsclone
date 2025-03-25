@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import "./RestaurantsPage.css";
 
 export default function RestaurantsPage() {
   const [restaurants, setRestaurants] = useState([]);
- 
+
   useEffect(() => {
     fetch("/api/restaurants")
       .then((res) => res.json())
@@ -18,7 +19,6 @@ export default function RestaurantsPage() {
     });
 
     if (res.ok) {
-      // Remove from local state after deletion
       setRestaurants((prev) => prev.filter((r) => r.id !== id));
     } else {
       const data = await res.json();
@@ -27,28 +27,38 @@ export default function RestaurantsPage() {
   };
 
   return (
-    <div>
-      <h2>All Restaurants</h2>
+    <div className="restaurants-page">
+      <div className="restaurants-header">
+        <h2>Featured on Uber Eats</h2>
+        <Link to="/restaurants/new">
+          <button className="create-restaurant-btn">Create New Restaurant</button>
+        </Link>
+      </div>
 
-      <Link to="/restaurants/new">
-        <button>Create New Restaurant</button>
-      </Link>
-
-      <ul>
+      <div className="restaurant-scroll-row">
         {restaurants.map((r) => (
-          <li key={r.id}>
-            <strong>{r.name}</strong> — {r.address} ({r.cuisine}) &nbsp;
-
-            {/* Edit button (if user is owner) */}
-            <Link to={`/restaurants/${r.id}/edit`}>
-              <button>Edit</button>
-            </Link>
-
-            {/* Delete button (if user is owner) */}
-            <button onClick={() => handleDelete(r.id)}>Delete</button>
-          </li>
+          <div key={r.id} className="restaurant-card">
+            <img
+              src="/restaurant-placeholder.jpg"
+              alt={r.name}
+              onError={(e) => {
+                e.target.src = "/fallback-image.jpg";
+              }}
+            />
+            <div className="restaurant-info">
+              <h3>{r.name}</h3>
+              <p>{r.address}</p>
+              <p className="cuisine">{r.cuisine || "Cuisine"}</p>
+              <div className="restaurant-actions">
+                <Link to={`/restaurants/${r.id}/edit`}>
+                  <button className="edit-btn">Edit</button>
+                </Link>
+                <button className="delete-btn" onClick={() => handleDelete(r.id)}>Delete</button>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

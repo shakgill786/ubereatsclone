@@ -11,7 +11,7 @@ class Restaurant(db.Model):
     address = db.Column(db.String(255), nullable=False)
     cuisine = db.Column(db.String(100))
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False)
-
+    image_url = db.Column(db.String(500))
     user = db.relationship("User", backref="restaurants")
 
     def to_dict(self):
