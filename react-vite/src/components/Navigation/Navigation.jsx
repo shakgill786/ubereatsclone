@@ -1,48 +1,51 @@
+// src/components/Navigation/Navigation.jsx
+
 import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { thunkLogout } from "../../redux/session";
 import "./Navigation.css";
 
 function Navigation() {
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
+  const dispatch = useDispatch();
 
-  const logout = (e) => {
-    e.preventDefault();
+  const handleLogout = () => {
     dispatch(thunkLogout());
-  };
-
-  const capitalize = (str) => {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   return (
     <nav className="navbar">
+      {/* Left: Logo */}
       <div className="navbar-logo">
         <NavLink to="/">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/9/96/UNESCO_logo.svg"
-            alt="Logo"
-            className="logo"
-          />
+          <img src="/logo.png" alt="App Logo" className="logo" />
         </NavLink>
       </div>
 
-      <div className="navbar-title">Luxury Eats</div>
+      {/* Center: Title */}
+      <div className="navbar-title">Uber Eats Clone</div>
 
+      {/* Right: Auth/Links */}
       <div className="navbar-links">
-        <NavLink to="/">Home</NavLink>
+        <NavLink to="/" className="home-link">
+          Home
+        </NavLink>
 
         {user ? (
-          <>
-            <span className="welcome-user">Welcome, {capitalize(user.username)}</span>
-            <button onClick={logout}>Log Out</button>
-          </>
+          <div className="nav-user-info">
+            <span>
+              Welcome, {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
+            </span>
+            <button onClick={handleLogout}>Log Out</button>
+          </div>
         ) : (
           <>
-            <NavLink to="/login">Log In</NavLink>
-            <NavLink to="/signup">Sign Up</NavLink>
+            <NavLink to="/login" className="auth-link">
+              Log In
+            </NavLink>
+            <NavLink to="/signup" className="auth-link">
+              Sign Up
+            </NavLink>
           </>
         )}
       </div>
