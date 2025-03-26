@@ -20,5 +20,7 @@ class Restaurant(db.Model):
             "name": self.name,
             "address": self.address,
             "cuisine": self.cuisine,
-            "user_id": self.user_id
-        }
+            "user_id": self.user_id,
+            "image_url": self.image_url
+    }
+

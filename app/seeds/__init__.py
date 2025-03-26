@@ -3,6 +3,9 @@ from app.models import db, User
 from sqlalchemy.sql import text
 import os
 
+# ✅ Import restaurant seed functions
+from .restaurant_seeds import seed_restaurants, undo_restaurants
+
 # Get environment variables
 environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
@@ -27,21 +30,21 @@ def undo_users():
         db.session.execute(text(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;"))
     else:
         db.session.execute(text("DELETE FROM users"))
-
     db.session.commit()
 
 # ✅ SEED COMMAND: RUN ALL SEEDS
 @seed_commands.command('all')
 def seed():
     if environment == 'production':
+        db.session.execute(text(f"TRUNCATE table {SCHEMA}.restaurants RESTART IDENTITY CASCADE;"))
         db.session.execute(text(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;"))
         db.session.commit()
-    
+
     seed_users()
+    seed_restaurants()
 
 # ✅ SEED COMMAND: UNDO ALL SEEDS
 @seed_commands.command('undo')
 def undo():
+    undo_restaurants()
     undo_users()
-
-    # Add other undo functions here
