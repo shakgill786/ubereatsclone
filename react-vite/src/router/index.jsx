@@ -2,8 +2,10 @@ import { createBrowserRouter } from "react-router-dom";
 import LoginFormPage from "../components/LoginFormPage";
 import SignupFormPage from "../components/SignupFormPage";
 import Layout from "./Layout";
-import RestaurantsPage from "../components/restaurants/RestaurantsPage"; // ✅
-import CreateRestaurantForm from "../components/restaurants/CreateRestaurantForm"; // ✅
+import RestaurantsPage from "../components/restaurants/RestaurantsPage";
+import CreateRestaurantForm from "../components/restaurants/CreateRestaurantForm";
+import EditRestaurantForm from "../components/restaurants/EditRestaurantForm";
+import RestaurantDetailPage from "../components/restaurants/RestaurantDetailPage";
 
 export const router = createBrowserRouter([
   {
@@ -22,12 +24,20 @@ export const router = createBrowserRouter([
         element: <SignupFormPage />,
       },
       {
-        path: "restaurants", // ✅ Now handled
+        path: "restaurants",
         element: <RestaurantsPage />,
       },
       {
-        path: "restaurants/new", // ✅ Create form
+        path: "restaurants/new",
         element: <CreateRestaurantForm />,
+      },
+      {
+        path: "restaurants/:id/edit",
+        element: <EditRestaurantForm />,
+      },
+      {
+        path: "restaurants/:id",
+        element: <RestaurantDetailPage />,
       },
     ],
   },
