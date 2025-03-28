@@ -1,53 +1,56 @@
-// src/components/Navigation/Navigation.jsx
-
 import { NavLink } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import ProfileButton from "./ProfileButton";
+import { useDispatch, useSelector } from "react-redux";
 import { thunkLogout } from "../../redux/session";
 import "./Navigation.css";
 
 function Navigation() {
-  const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.session.user);
 
-  const handleLogout = () => {
+  const logout = (e) => {
+    e.preventDefault();
     dispatch(thunkLogout());
+  };
+
+  const capitalize = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   return (
     <nav className="navbar">
-      {/* Left: Logo */}
+      {/* Left logo */}
       <div className="navbar-logo">
         <NavLink to="/">
-          <img src="/logo.png" alt="App Logo" className="logo" />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/9/96/UNESCO_logo.svg"
+            alt="Logo"
+            className="logo"
+          />
         </NavLink>
       </div>
 
-      {/* Center: Title */}
-      <div className="navbar-title">Uber Eats Clone</div>
+      {/* Center title */}
+      <div className="navbar-title">Luxury Eats</div>
 
-      {/* Right: Auth/Links */}
+      {/* Right nav links */}
       <div className="navbar-links">
-        <NavLink to="/" className="home-link">
-          Home
-        </NavLink>
+        <NavLink to="/" className="nav-link">Home</NavLink>
 
         {user ? (
-          <div className="nav-user-info">
-            <span>
-              Welcome, {user.username.charAt(0).toUpperCase() + user.username.slice(1)}
-            </span>
-            <button onClick={handleLogout}>Log Out</button>
-          </div>
+          <>
+            <span className="welcome-user">Welcome, {capitalize(user.username)}</span>
+            <button className="logout-btn" onClick={logout}>Log Out</button>
+          </>
         ) : (
           <>
-            <NavLink to="/login" className="auth-link">
-              Log In
-            </NavLink>
-            <NavLink to="/signup" className="auth-link">
-              Sign Up
-            </NavLink>
+            <NavLink to="/login" className="nav-link">Log In</NavLink>
+            <NavLink to="/signup" className="nav-link">Sign Up</NavLink>
           </>
         )}
+
+        <ProfileButton />
       </div>
     </nav>
   );
