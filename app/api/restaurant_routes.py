@@ -19,6 +19,7 @@ def create_restaurant():
         name=data['name'],
         address=data['address'],
         cuisine=data.get('cuisine', ''),
+        image_url=data.get('image_url'),
         user_id=current_user.id
     )
     db.session.add(new_restaurant)
@@ -36,6 +37,7 @@ def update_restaurant(id):
     restaurant.name = data['name']
     restaurant.address = data['address']
     restaurant.cuisine = data.get('cuisine', '')
+    restaurant.image_url = data.get('image_url', restaurant.image_url)
     db.session.commit()
     return restaurant.to_dict()
 

@@ -71,7 +71,16 @@ export const thunkSignup = (user) => async (dispatch) => {
 };
 
 export const thunkLogout = () => async (dispatch) => {
-  await fetch("/api/auth/logout", { credentials: "include" });
+  await fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  // 🔄 Grab fresh CSRF token after logout
+  await fetch("/api/csrf/restore", {
+    credentials: "include",
+  });
+
   dispatch(removeUser());
 };
 

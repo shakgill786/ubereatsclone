@@ -1,11 +1,12 @@
-// src/components/restaurants/RestaurantsPage.jsx
-
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./RestaurantsPage.css";
 
 export default function RestaurantsPage() {
   const [restaurants, setRestaurants] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [cart, setCart] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/api/restaurants")
@@ -13,15 +14,27 @@ export default function RestaurantsPage() {
       .then((data) => setRestaurants(data));
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this restaurant?")) return;
-    const res = await fetch(`/api/restaurants/${id}`, { method: "DELETE" });
-    if (res.ok) {
-      setRestaurants((prev) => prev.filter((r) => r.id !== id));
+  const toggleFavorite = (id) => {
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
+    );
+  };
+
+  const handleAddToCart = (id) => {
+    setCart((prev) => [...prev, id]);
+    const button = document.getElementById(`add-to-cart-${id}`);
+    if (button) {
+      button.classList.add("bounce");
+      setTimeout(() => button.classList.remove("bounce"), 600);
     }
   };
 
-  // Add mock data to restaurants
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this restaurant?")) return;
+    const res = await fetch(`/api/restaurants/${id}`, { method: "DELETE" });
+    if (res.ok) setRestaurants((prev) => prev.filter((r) => r.id !== id));
+  };
+
   const addMockInfo = (restaurant) => {
     const ratings = [4.7, 4.8, 4.9, 5.0];
     const fees = ["$1.99", "$2.99", "Free", "$3.49"];
@@ -42,8 +55,50 @@ export default function RestaurantsPage() {
     };
   };
 
-  const featuredRestaurants = restaurants.slice(0, 6).map(addMockInfo);
-  const allRestaurants = restaurants.map(addMockInfo);
+  const featured = restaurants.slice(0, 6).map(addMockInfo);
+  const all = restaurants.map(addMockInfo);
+
+  const renderCard = (r) => (
+    <div key={r.id} className="restaurant-card" onClick={() => navigate(`/restaurants/${r.id}`)}>
+      <img src={r.image_url || "/restaurant-placeholder.jpg"} alt={r.name} />
+      <div className="restaurant-info">
+        <h3>{r.name}</h3>
+        <p className="rating">⭐ {r.rating}</p>
+        <p>{r.address}</p>
+        <p className="tags">{r.tags?.join(", ")}</p>
+        <p>{r.time} • {r.fee}</p>
+        <div className="card-buttons" onClick={(e) => e.stopPropagation()}>
+          <span
+            className={`favorite-icon ${favorites.includes(r.id) ? "filled" : ""}`}
+            onClick={() => toggleFavorite(r.id)}
+          >
+            ♥
+          </span>
+          <button
+            id={`add-to-cart-${r.id}`}
+            className="add-to-cart-btn"
+            onClick={() => handleAddToCart(r.id)}
+          >
+            Add to Cart
+          </button>
+        </div>
+        <div className="restaurant-actions">
+          <Link to={`/restaurants/${r.id}/edit`} onClick={(e) => e.stopPropagation()}>
+            <button className="edit-btn">Edit</button>
+          </Link>
+          <button
+            className="delete-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(r.id);
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="restaurants-page">
@@ -54,43 +109,13 @@ export default function RestaurantsPage() {
         </Link>
       </div>
 
-      {/* Horizontal scroll row */}
       <div className="restaurant-scroll-row">
-        {featuredRestaurants.map((r) => (
-          <div key={r.id} className="restaurant-card">
-            <img src={r.image_url || "/restaurant-placeholder.jpg"} alt={r.name} />
-            <div className="restaurant-info">
-              <h3>{r.name}</h3>
-              <p className="rating">⭐ {r.rating}</p>
-              <p>{r.address}</p>
-              <p className="tags">{r.tags?.join(", ")}</p>
-              <p>{r.time} • {r.fee}</p>
-            </div>
-          </div>
-        ))}
+        {featured.map(renderCard)}
       </div>
 
-      {/* Grid section */}
       <h2 className="section-title">All Restaurants</h2>
       <div className="restaurant-grid">
-        {allRestaurants.map((r) => (
-          <div key={r.id} className="restaurant-card">
-            <img src={r.image_url || "/restaurant-placeholder.jpg"} alt={r.name} />
-            <div className="restaurant-info">
-              <h3>{r.name}</h3>
-              <p className="rating">⭐ {r.rating}</p>
-              <p>{r.address}</p>
-              <p className="tags">{r.tags?.join(", ")}</p>
-              <p>{r.time} • {r.fee}</p>
-              <div className="restaurant-actions">
-                <Link to={`/restaurants/${r.id}/edit`}>
-                  <button className="edit-btn">Edit</button>
-                </Link>
-                <button className="delete-btn" onClick={() => handleDelete(r.id)}>Delete</button>
-              </div>
-            </div>
-          </div>
-        ))}
+        {all.map(renderCard)}
       </div>
     </div>
   );
