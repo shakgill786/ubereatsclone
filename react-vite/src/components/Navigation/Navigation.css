@@ -71,6 +71,11 @@ body {
   flex: 0 0 auto;
 }
 
+.navbar-links .nav-link:hover {
+  color: #e13711;
+  text-decoration: underline;
+}
+
 /* User Info Container */
 .nav-user-info {
   display: flex;

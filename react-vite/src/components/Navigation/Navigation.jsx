@@ -38,6 +38,10 @@ function Navigation() {
       <div className="navbar-links">
         <NavLink to="/" className="nav-link">Home</NavLink>
 
+        {user && (
+          <NavLink to="/dashboard" className="nav-link">Dashboard</NavLink>
+        )}
+
         {user ? (
           <>
             <span className="welcome-user">Welcome, {capitalize(user.username)}</span>

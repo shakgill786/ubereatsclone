@@ -6,6 +6,7 @@ import RestaurantsPage from "../components/restaurants/RestaurantsPage";
 import CreateRestaurantForm from "../components/restaurants/CreateRestaurantForm";
 import EditRestaurantForm from "../components/restaurants/EditRestaurantForm";
 import RestaurantDetailPage from "../components/restaurants/RestaurantDetailPage";
+import DashboardPage from "../components/dashboard/DashboardPage"; 
 
 export const router = createBrowserRouter([
   {
@@ -13,7 +14,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <h1>Welcome!</h1>,
+        element: <RestaurantsPage />,
       },
       {
         path: "login",
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: "restaurants/:id",
         element: <RestaurantDetailPage />,
+      },
+      {
+        path: "dashboard", // ✅ Dashboard route
+        element: <DashboardPage />,
       },
     ],
   },

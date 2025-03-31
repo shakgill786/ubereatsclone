@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getCookie } from "../../utils/csrf";
+import { useSelector } from "react-redux";
 import "./RestaurantsPage.css";
 
 export default function RestaurantsPage() {
@@ -7,17 +9,37 @@ export default function RestaurantsPage() {
   const [favorites, setFavorites] = useState([]);
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.session.user);
 
   useEffect(() => {
     fetch("/api/restaurants")
       .then((res) => res.json())
-      .then((data) => setRestaurants(data));
+      .then(setRestaurants);
+
+    fetch("/api/favorites", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => setFavorites(data.map((f) => f.restaurant_id)));
   }, []);
 
-  const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-    );
+  const toggleFavorite = async (id) => {
+    const csrfToken = getCookie("csrf_token");
+    const isFav = favorites.includes(id);
+
+    const res = await fetch(`/api/favorites${isFav ? `/${id}` : ""}`, {
+      method: isFav ? "DELETE" : "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
+      },
+      credentials: "include",
+      body: !isFav ? JSON.stringify({ restaurant_id: id }) : null,
+    });
+
+    if (res.ok) {
+      setFavorites((prev) =>
+        isFav ? prev.filter((f) => f !== id) : [...prev, id]
+      );
+    }
   };
 
   const handleAddToCart = (id) => {
@@ -31,7 +53,13 @@ export default function RestaurantsPage() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this restaurant?")) return;
-    const res = await fetch(`/api/restaurants/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/restaurants/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "X-CSRF-Token": getCookie("csrf_token"),
+      },
+    });
     if (res.ok) setRestaurants((prev) => prev.filter((r) => r.id !== id));
   };
 
@@ -59,7 +87,11 @@ export default function RestaurantsPage() {
   const all = restaurants.map(addMockInfo);
 
   const renderCard = (r) => (
-    <div key={r.id} className="restaurant-card" onClick={() => navigate(`/restaurants/${r.id}`)}>
+    <div
+      key={r.id}
+      className="restaurant-card"
+      onClick={() => navigate(`/restaurants/${r.id}`)}
+    >
       <img src={r.image_url || "/restaurant-placeholder.jpg"} alt={r.name} />
       <div className="restaurant-info">
         <h3>{r.name}</h3>
@@ -82,20 +114,22 @@ export default function RestaurantsPage() {
             Add to Cart
           </button>
         </div>
-        <div className="restaurant-actions">
-          <Link to={`/restaurants/${r.id}/edit`} onClick={(e) => e.stopPropagation()}>
-            <button className="edit-btn">Edit</button>
-          </Link>
-          <button
-            className="delete-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(r.id);
-            }}
-          >
-            Delete
-          </button>
-        </div>
+        {user && user.id === r.user_id && (
+          <div className="restaurant-actions" onClick={(e) => e.stopPropagation()}>
+            <Link to={`/restaurants/${r.id}/edit`}>
+              <button className="edit-btn">Edit</button>
+            </Link>
+            <button
+              className="delete-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(r.id);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -108,15 +142,9 @@ export default function RestaurantsPage() {
           <button className="create-restaurant-btn">Create New Restaurant</button>
         </Link>
       </div>
-
-      <div className="restaurant-scroll-row">
-        {featured.map(renderCard)}
-      </div>
-
+      <div className="restaurant-scroll-row">{featured.map(renderCard)}</div>
       <h2 className="section-title">All Restaurants</h2>
-      <div className="restaurant-grid">
-        {all.map(renderCard)}
-      </div>
+      <div className="restaurant-grid">{all.map(renderCard)}</div>
     </div>
   );
 }

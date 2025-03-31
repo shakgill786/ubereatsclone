@@ -13,6 +13,7 @@ class Restaurant(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False)
     image_url = db.Column(db.String(500))
     user = db.relationship("User", backref="restaurants")
+    favorited_by = db.relationship("Favorite", back_populates="restaurant", cascade="all, delete-orphan")
 
     def to_dict(self):
         return {

@@ -51,3 +51,15 @@ def delete_restaurant(id):
     db.session.delete(restaurant)
     db.session.commit()
     return {'message': 'Deleted successfully'}
+
+@restaurant_routes.route("/user")
+@login_required
+def get_user_restaurants():
+    restaurants = Restaurant.query.filter_by(user_id=current_user.id).all()
+    return jsonify([r.to_dict() for r in restaurants])
+
+@restaurant_routes.route('/my-restaurants')
+@login_required
+def user_restaurants():
+    user_restaurants = Restaurant.query.filter_by(user_id=current_user.id).all()
+    return jsonify([r.to_dict() for r in user_restaurants])
