@@ -1,15 +1,18 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 from flask_login import login_required, current_user
-from app.models import db, Favorite
+from app.models import db, Favorite, Restaurant
 
 favorite_routes = Blueprint('favorites', __name__)
 
 @favorite_routes.route('/', methods=['GET'])
 @login_required
 def get_favorites():
-    """Get all favorite restaurants for current user"""
+    """Return full restaurant info for current user's favorites"""
     favorites = Favorite.query.filter_by(user_id=current_user.id).all()
-    return jsonify([fav.to_dict() for fav in favorites])
+    restaurant_ids = [f.restaurant_id for f in favorites]
+
+    restaurants = Restaurant.query.filter(Restaurant.id.in_(restaurant_ids)).all()
+    return jsonify([r.to_dict() for r in restaurants])
 
 @favorite_routes.route('/<int:restaurant_id>', methods=['POST'])
 @login_required

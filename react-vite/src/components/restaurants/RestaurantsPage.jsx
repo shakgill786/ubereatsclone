@@ -1,3 +1,4 @@
+// src/components/restaurants/RestaurantsPage.jsx
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getCookie } from "../../utils/csrf";
@@ -12,32 +13,57 @@ export default function RestaurantsPage() {
   const user = useSelector((state) => state.session.user);
 
   useEffect(() => {
-    fetch("/api/restaurants")
-      .then((res) => res.json())
-      .then(setRestaurants);
+    const fetchData = async () => {
+      const res = await fetch("/api/restaurants");
+      const data = await res.json();
+
+      // Generate mock info ONCE
+      const ratings = [4.7, 4.8, 4.9, 5.0];
+      const fees = ["$1.99", "$2.99", "Free", "$3.49"];
+      const times = ["15–25 min", "20–30 min", "25–35 min"];
+      const tags = [
+        ["Pizza", "Italian"],
+        ["Healthy", "Vegan"],
+        ["Sushi", "Japanese"],
+        ["Burgers", "Fast Food"],
+      ];
+
+      const enriched = data.map((restaurant) => {
+        const rand = Math.floor(Math.random() * 4);
+        return {
+          ...restaurant,
+          rating: ratings[rand],
+          fee: fees[rand],
+          time: times[rand % 3],
+          tags: tags[rand],
+        };
+      });
+
+      setRestaurants(enriched);
+    };
+
+    fetchData();
 
     fetch("/api/favorites", { credentials: "include" })
       .then((res) => res.json())
-      .then((data) => setFavorites(data.map((f) => f.restaurant_id)));
+      .then((data) => setFavorites(data.map((fav) => fav.restaurant_id)));
   }, []);
 
   const toggleFavorite = async (id) => {
     const csrfToken = getCookie("csrf_token");
-    const isFav = favorites.includes(id);
 
-    const res = await fetch(`/api/favorites${isFav ? `/${id}` : ""}`, {
-      method: isFav ? "DELETE" : "POST",
+    const res = await fetch(`/api/favorites/${id}`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": csrfToken,
       },
       credentials: "include",
-      body: !isFav ? JSON.stringify({ restaurant_id: id }) : null,
     });
 
     if (res.ok) {
       setFavorites((prev) =>
-        isFav ? prev.filter((f) => f !== id) : [...prev, id]
+        prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
       );
     }
   };
@@ -63,29 +89,6 @@ export default function RestaurantsPage() {
     if (res.ok) setRestaurants((prev) => prev.filter((r) => r.id !== id));
   };
 
-  const addMockInfo = (restaurant) => {
-    const ratings = [4.7, 4.8, 4.9, 5.0];
-    const fees = ["$1.99", "$2.99", "Free", "$3.49"];
-    const times = ["15–25 min", "20–30 min", "25–35 min"];
-    const tags = [
-      ["Pizza", "Italian"],
-      ["Healthy", "Vegan"],
-      ["Sushi", "Japanese"],
-      ["Burgers", "Fast Food"],
-    ];
-    const rand = Math.floor(Math.random() * 4);
-    return {
-      ...restaurant,
-      rating: ratings[rand],
-      fee: fees[rand],
-      time: times[rand % 3],
-      tags: tags[rand],
-    };
-  };
-
-  const featured = restaurants.slice(0, 6).map(addMockInfo);
-  const all = restaurants.map(addMockInfo);
-
   const renderCard = (r) => (
     <div
       key={r.id}
@@ -99,6 +102,7 @@ export default function RestaurantsPage() {
         <p>{r.address}</p>
         <p className="tags">{r.tags?.join(", ")}</p>
         <p>{r.time} • {r.fee}</p>
+
         <div className="card-buttons" onClick={(e) => e.stopPropagation()}>
           <span
             className={`favorite-icon ${favorites.includes(r.id) ? "filled" : ""}`}
@@ -114,6 +118,7 @@ export default function RestaurantsPage() {
             Add to Cart
           </button>
         </div>
+
         {user && user.id === r.user_id && (
           <div className="restaurant-actions" onClick={(e) => e.stopPropagation()}>
             <Link to={`/restaurants/${r.id}/edit`}>
@@ -142,9 +147,13 @@ export default function RestaurantsPage() {
           <button className="create-restaurant-btn">Create New Restaurant</button>
         </Link>
       </div>
-      <div className="restaurant-scroll-row">{featured.map(renderCard)}</div>
+
+      <div className="restaurant-scroll-row">
+        {restaurants.slice(0, 6).map(renderCard)}
+      </div>
+
       <h2 className="section-title">All Restaurants</h2>
-      <div className="restaurant-grid">{all.map(renderCard)}</div>
+      <div className="restaurant-grid">{restaurants.map(renderCard)}</div>
     </div>
   );
 }

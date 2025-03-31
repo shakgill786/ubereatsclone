@@ -8,7 +8,7 @@ from .models import db, User
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.restaurant_routes import restaurant_routes
-from .api.favorite_routes import favorite_routes  # ✅ NEW!
+from .api.favorite_routes import favorite_routes
 from .seeds import seed_commands
 from .config import Config
 
@@ -35,7 +35,7 @@ CORS(app)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(restaurant_routes, url_prefix='/api/restaurants')
-app.register_blueprint(favorite_routes, url_prefix='/api/favorites')  # ✅ REGISTERED
+app.register_blueprint(favorite_routes, url_prefix='/api/favorites') 
 
 @app.before_request
 def https_redirect():

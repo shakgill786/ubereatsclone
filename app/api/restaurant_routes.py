@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from app.models import db, Restaurant
+from app.models import db, Restaurant, Favorite
 
 restaurant_routes = Blueprint('restaurants', __name__)
 
@@ -10,7 +10,7 @@ def get_restaurants():
     restaurants = Restaurant.query.all()
     return jsonify([r.to_dict() for r in restaurants])
 
-# POST create new restaurant
+# Create restaurant
 @restaurant_routes.route('/', methods=['POST'])
 @login_required
 def create_restaurant():
@@ -26,7 +26,7 @@ def create_restaurant():
     db.session.commit()
     return new_restaurant.to_dict(), 201
 
-# PUT update restaurant
+# Update restaurant
 @restaurant_routes.route('/<int:id>', methods=['PUT'])
 @login_required
 def update_restaurant(id):
@@ -41,7 +41,7 @@ def update_restaurant(id):
     db.session.commit()
     return restaurant.to_dict()
 
-# DELETE restaurant
+# Delete restaurant
 @restaurant_routes.route('/<int:id>', methods=['DELETE'])
 @login_required
 def delete_restaurant(id):
@@ -52,14 +52,19 @@ def delete_restaurant(id):
     db.session.commit()
     return {'message': 'Deleted successfully'}
 
-@restaurant_routes.route("/user")
-@login_required
-def get_user_restaurants():
-    restaurants = Restaurant.query.filter_by(user_id=current_user.id).all()
-    return jsonify([r.to_dict() for r in restaurants])
-
+# Restaurants created by user
 @restaurant_routes.route('/my-restaurants')
 @login_required
-def user_restaurants():
-    user_restaurants = Restaurant.query.filter_by(user_id=current_user.id).all()
-    return jsonify([r.to_dict() for r in user_restaurants])
+def my_restaurants():
+    owned = Restaurant.query.filter_by(user_id=current_user.id).all()
+    return jsonify([r.to_dict() for r in owned])
+
+# Restaurants favorited by user
+@restaurant_routes.route('/favorites')
+@login_required
+def favorite_restaurants():
+    favorites = Favorite.query.filter_by(user_id=current_user.id).all()
+    restaurant_ids = [f.restaurant_id for f in favorites]
+    restaurants = Restaurant.query.filter(Restaurant.id.in_(restaurant_ids)).all()
+    return jsonify([r.to_dict() for r in restaurants])
+
