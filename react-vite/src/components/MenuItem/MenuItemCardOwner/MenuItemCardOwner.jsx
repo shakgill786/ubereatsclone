@@ -1,5 +1,5 @@
-import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import OpenModalButton from '../../components/OpenModalButton';
 import MenuItemDeleteModal from '../MenuItemDeleteModal';
 import MenuItemFormUpdate from '../MenuItemFormUpdate';
@@ -9,7 +9,7 @@ export default function MenuItemCardOwner({ menuItem }) {
     const dispatch = useDispatch();
     const menuItemId = menuItem.id;
     const restaurantId = menuItem.restaurantId;
-    const [isLoaded, setIsLoaded] = useStatefalse();
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         setIsLoaded(true);

@@ -8,6 +8,7 @@ import "./RestaurantsPage.css";
 export default function RestaurantsPage() {
   const [restaurants, setRestaurants] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
   const user = useSelector((state) => state.session.user);

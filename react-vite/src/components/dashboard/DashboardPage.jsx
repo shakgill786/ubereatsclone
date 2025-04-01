@@ -58,14 +58,14 @@ export default function DashboardPage() {
     <div className="dashboard-page">
       <h2>Your Restaurants</h2>
       {owned.length === 0 ? (
-        <p>You haven’t added any restaurants yet.</p>
+        <p>You haven&apos;t added any restaurants yet.</p>
       ) : (
         <div className="restaurant-grid">{owned.map((r) => renderCard(r, true))}</div>
       )}
 
       <h2>Favorited Restaurants</h2>
       {favorites.length === 0 ? (
-        <p>You haven't favorited any restaurants yet.</p>
+        <p>You haven`&apos;t favorited any restaurants yet.</p>
       ) : (
         <div className="restaurant-grid">{favorites.map((r) => renderCard(r))}</div>
       )}
