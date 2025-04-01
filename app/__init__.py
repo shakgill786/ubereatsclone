@@ -29,7 +29,7 @@ app.cli.add_command(seed_commands)
 app.config.from_object(Config)
 db.init_app(app)
 Migrate(app, db)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # Blueprints
 app.register_blueprint(user_routes, url_prefix='/api/users')

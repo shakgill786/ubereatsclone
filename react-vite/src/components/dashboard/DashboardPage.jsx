@@ -8,17 +8,35 @@ export default function DashboardPage() {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
+    // Fetch user-owned restaurants
     fetch("/api/restaurants/my-restaurants", { credentials: "include" })
       .then((res) => res.json())
-      .then(setOwned);
+      .then(setOwned)
+      .catch((err) => {
+        console.error("Failed to load owned restaurants:", err);
+        setOwned([]);
+      });
 
+    // Fetch full favorite restaurants
     fetch("/api/favorites", { credentials: "include" })
       .then((res) => res.json())
-      .then(setFavorites);
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setFavorites(data);
+        } else {
+          console.error("Unexpected favorites response:", data);
+          setFavorites([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load favorites:", err);
+        setFavorites([]);
+      });
   }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this restaurant?")) return;
+
     const res = await fetch(`/api/restaurants/${id}`, {
       method: "DELETE",
       credentials: "include",
@@ -58,14 +76,14 @@ export default function DashboardPage() {
     <div className="dashboard-page">
       <h2>Your Restaurants</h2>
       {owned.length === 0 ? (
-        <p>You haven&apos;t added any restaurants yet.</p>
+        <p>You haven’t added any restaurants yet.</p>
       ) : (
         <div className="restaurant-grid">{owned.map((r) => renderCard(r, true))}</div>
       )}
 
       <h2>Favorited Restaurants</h2>
       {favorites.length === 0 ? (
-        <p>You haven`&apos;t favorited any restaurants yet.</p>
+        <p>You haven’t favorited any restaurants yet.</p>
       ) : (
         <div className="restaurant-grid">{favorites.map((r) => renderCard(r))}</div>
       )}
