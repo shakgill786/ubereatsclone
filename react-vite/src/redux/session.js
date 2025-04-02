@@ -32,20 +32,25 @@ export const thunkLogin = (credentials) => async (dispatch) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRF-Token": csrfToken
+      "X-CSRF-Token": csrfToken,
     },
     credentials: "include",
-    body: JSON.stringify(credentials)
+    body: JSON.stringify(credentials),
   });
 
   if (response.ok) {
     const data = await response.json();
     dispatch(setUser(data));
-  } else if (response.status < 500) {
-    const errorData = await response.json();
-    return errorData.errors || ["Login failed."];
+    return null; // important: this tells the form "no errors"
   } else {
-    return ["A server error occurred. Please try again."];
+    const data = await response.json();
+    if (data?.errors) {
+      // Always return an array, regardless of object or flat format
+      return Array.isArray(data.errors)
+        ? data.errors
+        : Object.values(data.errors).flat();
+    }
+    return ["Login failed. Please try again."];
   }
 };
 

@@ -1,3 +1,5 @@
+// react-vite/src/components/LoginFormPage/LoginFormPage.jsx
+
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -17,9 +19,14 @@ function LoginFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors([]);
+
     const res = await dispatch(thunkLogin({ email, password }));
-    if (res?.length > 0) {
-      setErrors(res);
+
+    if (res?.errors) {
+      const messages = Array.isArray(res.errors)
+        ? res.errors
+        : Object.values(res.errors).flat();
+      setErrors(messages);
     } else {
       navigate("/");
     }
@@ -32,6 +39,7 @@ function LoginFormPage() {
         {errors.map((err, i) => (
           <p key={i} className="error">{err}</p>
         ))}
+
         <label>
           Email
           <input
@@ -41,6 +49,7 @@ function LoginFormPage() {
             required
           />
         </label>
+
         <label>
           Password
           <input
@@ -50,6 +59,7 @@ function LoginFormPage() {
             required
           />
         </label>
+
         <button type="submit">Log In</button>
       </form>
     </>
