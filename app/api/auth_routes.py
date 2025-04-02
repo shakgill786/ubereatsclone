@@ -8,26 +8,20 @@ auth_routes = Blueprint('auth', __name__)
 
 @auth_routes.route('/')
 def authenticate():
-    """
-    Authenticates a user.
-    """
+    """Authenticates a user."""
     if current_user.is_authenticated:
         return current_user.to_dict()
     return {'errors': {'message': 'Unauthorized'}}, 401
 
 @auth_routes.route('/login', methods=['POST'])
 def login():
-    """
-    Logs a user in
-    """
+    """Logs a user in"""
     try:
         form = LoginForm()
-
-        # Get CSRF token
         csrf_token = request.cookies.get("csrf_token")
         form['csrf_token'].data = csrf_token
 
-        print("🔐 Login request received")
+        print("🔐 Login attempt:")
         print("📥 Request JSON:", request.json)
         print("🍪 Cookies:", request.cookies)
         print("🔒 CSRF token:", csrf_token)
@@ -35,14 +29,14 @@ def login():
         if form.validate_on_submit():
             user = User.query.filter(User.email == form.data['email']).first()
             if not user:
-                print("❌ No user found.")
+                print("❌ Invalid credentials")
                 return {"errors": ["Invalid credentials."]}, 401
 
             login_user(user)
-            print("✅ Login successful for:", user.email)
+            print("✅ Login successful:", user.email)
             return user.to_dict()
 
-        print("❌ Login form validation failed:", form.errors)
+        print("❌ Form validation failed:", form.errors)
         return {"errors": form.errors}, 401
 
     except Exception as e:
@@ -50,26 +44,21 @@ def login():
         traceback.print_exc()
         return {"errors": ["Server error. Please try again."]}, 500
 
-
-@auth_routes.route('/logout')
+@auth_routes.route('/logout', methods=['POST'])
 def logout():
-    """
-    Logs a user out
-    """
+    """Logs a user out"""
     logout_user()
     return {'message': 'User logged out'}
 
 @auth_routes.route('/signup', methods=['POST'])
 def sign_up():
-    """
-    Creates a new user and logs them in
-    """
+    """Creates a new user and logs them in"""
     try:
         form = SignUpForm()
         csrf_token = request.cookies.get("csrf_token")
         form['csrf_token'].data = csrf_token
 
-        print("📝 Signup request received")
+        print("📝 Signup request:")
         print("📥 Request JSON:", request.json)
         print("🔒 CSRF token:", csrf_token)
 
@@ -82,10 +71,10 @@ def sign_up():
             db.session.add(user)
             db.session.commit()
             login_user(user)
-            print("✅ Signup and login successful for:", user.email)
+            print("✅ Signup successful:", user.email)
             return user.to_dict()
 
-        print("❌ Signup form validation failed:", form.errors)
+        print("❌ Signup form errors:", form.errors)
         return {"errors": form.errors}, 401
 
     except Exception as e:
@@ -93,10 +82,7 @@ def sign_up():
         traceback.print_exc()
         return {"errors": ["Server error. Please try again."]}, 500
 
-
 @auth_routes.route('/unauthorized')
 def unauthorized():
-    """
-    Returns unauthorized JSON when flask-login authentication fails
-    """
+    """Returns unauthorized response for unauthenticated access"""
     return {'errors': {'message': 'Unauthorized'}}, 401

@@ -1,8 +1,8 @@
 import os
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, request, redirect
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_wtf.csrf import generate_csrf
 from flask_login import LoginManager
 from .models import db, User
 from .api.user_routes import user_routes
@@ -22,20 +22,22 @@ login.login_view = 'auth.unauthorized'
 def load_user(id):
     return User.query.get(int(id))
 
-# CLI Seed Commands
+# CLI seed
 app.cli.add_command(seed_commands)
 
-# Config & Extensions
+# Config
 app.config.from_object(Config)
 db.init_app(app)
 Migrate(app, db)
+
+# Enable CORS with cookies
 CORS(app, supports_credentials=True)
 
-# Blueprints
+# Register blueprints
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(restaurant_routes, url_prefix='/api/restaurants')
-app.register_blueprint(favorite_routes, url_prefix='/api/favorites') 
+app.register_blueprint(favorite_routes, url_prefix='/api/favorites')
 
 @app.before_request
 def https_redirect():
@@ -49,12 +51,16 @@ def inject_csrf_token(response):
     response.set_cookie(
         'csrf_token',
         generate_csrf(),
-        secure=True if os.environ.get('FLASK_ENV') == 'production' else False,
+        secure=os.environ.get('FLASK_ENV') == 'production',
         samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
-        httponly=False  
+        httponly=False  # Allows frontend to access via getCookie()
     )
     return response
 
+@app.route("/api/csrf/restore")
+def restore_csrf():
+    """Sets the CSRF cookie"""
+    return {"message": "CSRF cookie set"}
 
 @app.route("/api/docs")
 def api_help():
