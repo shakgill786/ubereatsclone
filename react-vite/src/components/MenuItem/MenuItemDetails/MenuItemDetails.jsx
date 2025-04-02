@@ -111,7 +111,7 @@ export default function MenuItemDetails() {
                     {restaurantInCart(menuItem) ?
                       <>
                         <p>
-                          Orders may only be placed from one restaurant at a time.
+                          Orders can only be placed from one restaurant at a time.
                         </p>
                         <p>
                           Please complete current order, or empty cart to order from another restaurant.
