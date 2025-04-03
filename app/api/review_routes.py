@@ -16,6 +16,7 @@ def get_reviews():
 
 # Add New Review
 @review_routes.route('/', methods=['POST'])
+@login_required
 def create_review():
     """
     Create a new review
@@ -24,12 +25,14 @@ def create_review():
     - comment: str (max 255 characters)
     - rating: int (1-5)
     - restaurant_id: int
-    - user_id: int
     """
+    if not current_user.is_authenticated:
+        return {'errors': ['Authentication required']}, 401
+
     data = request.get_json()
     
     # Validate required fields
-    if not all(key in data for key in ['comment', 'rating', 'restaurant_id', 'user_id']):
+    if not all(key in data for key in ['comment', 'rating', 'restaurant_id']):
         return {'errors': 'Missing required fields'}, 400
     
     # Validate rating range
@@ -41,17 +44,21 @@ def create_review():
     if not restaurant:
         return {'errors': 'Restaurant not found'}, 404
     
-    # Check if user exists
-    user = User.query.get(data['user_id'])
-    if not user:
-        return {'errors': 'User not found'}, 404
+    # Check if user already has a review for this restaurant
+    existing_review = Review.query.filter_by(
+        restaurant_id=data['restaurant_id'],
+        user_id=current_user.id
+    ).first()
+    
+    if existing_review:
+        return {'errors': 'You have already reviewed this restaurant'}, 400
     
     # Create new review
     review = Review(
         comment=data['comment'],
         rating=data['rating'],
         restaurant_id=data['restaurant_id'],
-        user_id=data['user_id']
+        user_id=current_user.id
     )
     
     try:
@@ -80,8 +87,18 @@ def get_reviews_by_restaurant(restaurant_id):
     # Get all reviews for this restaurant
     reviews = Review.query.filter_by(restaurant_id=restaurant_id).all()
     
-    # Convert reviews to dictionary format
-    reviews_dict = [review.to_dict() for review in reviews]
+    # Convert reviews to dictionary format and include user information
+    reviews_dict = []
+    for review in reviews:
+        review_data = review.to_dict()
+        user = User.query.get(review.user_id)
+        if user:
+            review_data['user'] = {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email
+            }
+        reviews_dict.append(review_data)
     
     return jsonify(reviews_dict)
 
@@ -115,4 +132,52 @@ def delete_review(review_id):
         return {'errors': [str(e)]}, 400
 
 
-# Update
+# Update Review
+@review_routes.route('/<int:review_id>', methods=['PUT'])
+@login_required
+def update_review(review_id):
+    """
+    Update a review
+    
+    Args:
+        review_id (int): ID of the review to update
+    """
+    # Get the review
+    review = Review.query.get(review_id)
+    
+    if not review:
+        return {'errors': ['Review not found']}, 404
+    
+    # Check if current user is authorized to update
+    if review.user_id != current_user.id:
+        return {'errors': ['Unauthorized']}, 403
+    
+    data = request.get_json()
+    
+    # Validate required fields
+    if not all(key in data for key in ['comment', 'rating']):
+        return {'errors': 'Missing required fields'}, 400
+    
+    # Validate rating range
+    if not 1 <= data['rating'] <= 5:
+        return {'errors': 'Rating must be between 1 and 5'}, 400
+    
+    try:
+        review.comment = data['comment']
+        review.rating = data['rating']
+        db.session.commit()
+        
+        # Get updated user information
+        user = User.query.get(review.user_id)
+        review_data = review.to_dict()
+        if user:
+            review_data['user'] = {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email
+            }
+        
+        return review_data, 200
+    except Exception as e:
+        db.session.rollback()
+        return {'errors': [str(e)]}, 400
