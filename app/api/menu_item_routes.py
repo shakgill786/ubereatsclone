@@ -7,6 +7,14 @@ import json
 
 menu_item_routes = Blueprint('menu_items', __name__)
 
+@menu_item_routes.route('/restaurant/<int:restaurant_id>/menu-items')
+def get_menu_items_for_restaurant(restaurant_id):
+    """
+    Gets all menu items for a specific restaurant
+    """
+    menu_items = MenuItem.query.filter_by(restaurant_id=restaurant_id).all()
+    return {"menuItems": [item.to_dict() for item in menu_items]}
+
 ### Get menu item: GET /api/menu-items/:menu_item_id
 @menu_item_routes.route('/<int:id>', methods=['GET'])
 def get_menu_item(id):

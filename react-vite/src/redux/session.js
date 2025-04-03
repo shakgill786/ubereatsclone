@@ -41,11 +41,10 @@ export const thunkLogin = (credentials) => async (dispatch) => {
   if (response.ok) {
     const data = await response.json();
     dispatch(setUser(data));
-    return null; // important: this tells the form "no errors"
+    return null; // ✅ no errors
   } else {
     const data = await response.json();
     if (data?.errors) {
-      // Always return an array, regardless of object or flat format
       return Array.isArray(data.errors)
         ? data.errors
         : Object.values(data.errors).flat();

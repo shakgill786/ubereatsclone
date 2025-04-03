@@ -4,7 +4,7 @@ import './MenuItemCard.css';
 export default function MenuItemCard({ menuItem }) {
     return (
         <>
-        <Link to={'/menu-items/${menuItem.id}'}>
+        <Link to={`/menu-items/${menuItem.id}`}>
         <div className='menu-item-card'>
         <div>
             ###add image here

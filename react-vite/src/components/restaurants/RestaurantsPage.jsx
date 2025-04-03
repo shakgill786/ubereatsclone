@@ -52,7 +52,7 @@ export default function RestaurantsPage() {
 
   const toggleFavorite = async (id) => {
     const csrfToken = getCookie("csrf_token");
-
+  
     const res = await fetch(`/api/favorites/${id}`, {
       method: "POST",
       headers: {
@@ -61,14 +61,17 @@ export default function RestaurantsPage() {
       },
       credentials: "include",
     });
-
+  
     if (res.ok) {
-      setFavorites((prev) =>
-        prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
-      );
+      // ✅ After toggling, re-fetch full updated favorites
+      const favRes = await fetch("/api/favorites", { credentials: "include" });
+      if (favRes.ok) {
+        const updated = await favRes.json();
+        setFavorites(updated.map((r) => r.id)); // only store IDs on RestaurantsPage
+      }
     }
   };
-
+  
   const handleAddToCart = (id) => {
     setCart((prev) => [...prev, id]);
     const button = document.getElementById(`add-to-cart-${id}`);

@@ -1,0 +1,10 @@
+.menu-items-page-container {
+    padding: 20px;
+  }
+  
+  .menu-items-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  

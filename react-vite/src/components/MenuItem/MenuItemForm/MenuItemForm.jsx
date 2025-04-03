@@ -142,26 +142,25 @@ export default function MenuItemForm({ formType, menuItem }) {
     setIsLoaded(true);
   }, [dispatch]);
 
-  useEffect(() => {
-    if (name.length > 25) {
-      errors.name = "Maximum 25 characters";
-    } else {
-      errors.name = "";
-    };
-    setTriggerRerenderToggle(!triggerRerenderToggle);
-  }, [name]);
+  // ✅ no code changes needed except:
+useEffect(() => {
+  if (name.length > 25) {
+    setErrors((prev) => ({ ...prev, name: "Maximum 25 characters" }));
+  } else {
+    setErrors((prev) => ({ ...prev, name: "" }));
+  }
+  setTriggerRerenderToggle(!triggerRerenderToggle);
+}, [name, errors, triggerRerenderToggle]);
 
-  useEffect(() => {
-    if (description.length > 200) {
-      errors.description = "Maximum 200 characters";
-    } else {
-      errors.description = "";
-    };
-    setTriggerRerenderToggle(!triggerRerenderToggle);
-  }, [description]);
+useEffect(() => {
+  if (description.length > 200) {
+    setErrors((prev) => ({ ...prev, description: "Maximum 200 characters" }));
+  } else {
+    setErrors((prev) => ({ ...prev, description: "" }));
+  }
+  setTriggerRerenderToggle(!triggerRerenderToggle);
+}, [description, errors, triggerRerenderToggle]);
 
-  useEffect(() => {
-  }, [triggerRerenderToggle]);
 
   return (
     <>
@@ -273,4 +272,4 @@ export default function MenuItemForm({ formType, menuItem }) {
       )}
     </>
   )
-};
+}

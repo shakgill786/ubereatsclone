@@ -6,9 +6,11 @@ import {
 } from "redux";
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
+import menuItemsReducer from "./menuItems"; // ✅ import your new menuItems reducer
 
 const rootReducer = combineReducers({
   session: sessionReducer,
+  menuItems: menuItemsReducer, // ✅ add menuItems to root reducer
 });
 
 let enhancer;
@@ -26,3 +28,4 @@ const configureStore = (preloadedState) => {
 };
 
 export default configureStore;
+

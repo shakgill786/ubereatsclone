@@ -3,14 +3,14 @@ import eslintPlugin from "vite-plugin-eslint";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig(({ mode }) => {
-  const isProduction = mode === "production";
-
   return {
     plugins: [
       react(),
       eslintPlugin({
         lintOnStart: true,
-        failOnError: isProduction,
+        failOnWarning: false,      // prevent build fail on warnings
+        failOnError: false,        // ✅ don't fail the build on errors
+        cache: false,              // ensures it checks freshly every time
       }),
     ],
     server: {

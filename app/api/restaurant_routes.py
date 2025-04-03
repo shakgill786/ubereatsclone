@@ -1,3 +1,4 @@
+from app.models import db, Restaurant, Favorite, MenuItem
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app.models import db, Restaurant, Favorite
@@ -9,6 +10,11 @@ restaurant_routes = Blueprint('restaurants', __name__)
 def get_restaurants():
     restaurants = Restaurant.query.all()
     return jsonify([r.to_dict() for r in restaurants])
+
+@restaurant_routes.route("/<int:id>/menu-items", methods=["GET"])
+def get_menu_items_for_restaurant(id):
+    menu_items = MenuItem.query.filter_by(restaurant_id=id).all()
+    return {"menuItems": [item.to_dict() for item in menu_items]}
 
 # Create restaurant
 @restaurant_routes.route('/', methods=['POST'])

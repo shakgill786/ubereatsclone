@@ -14,7 +14,7 @@ export default function MenuItemFormUpdate({ menuItem }) {
     menuItem.type = "dessert"
   } else if (menuItem.type === "MenuItemEnum.beverage") {
     menuItem.type = "beverage"
-  };
+  }
 
   useEffect(() => {
     setIsLoaded(true);
@@ -30,4 +30,4 @@ export default function MenuItemFormUpdate({ menuItem }) {
       )}
     </>
   )
-};
+}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import _React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 const ShoppingCartContext = createContext();
@@ -9,9 +9,9 @@ export function ShoppingCartProvider({ children }) {
   const [cart, setCart] = useState([])
 
   useEffect(() => {
-     const savedCart = localStorage.getItem(`cart_${user?.id}`);
-     setCart(savedCart ? JSON.parse(savedCart) : []);
-  }, [user])
+    const savedCart = localStorage.getItem(`cart_${user?.id}`);
+    setCart(savedCart ? JSON.parse(savedCart) : []);
+  }, [user?.id]);
 
   useEffect(() => {
     localStorage.setItem(`cart_${user?.id}`, JSON.stringify(cart));
