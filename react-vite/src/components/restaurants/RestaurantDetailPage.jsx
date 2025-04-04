@@ -23,6 +23,12 @@ export default function RestaurantDetailPage() {
       <h2>{restaurant.name}</h2>
       <p><strong>Address:</strong> {restaurant.address}</p>
       <p><strong>Cuisine:</strong> {restaurant.cuisine}</p>
+
+      {/* ✨ View Menu Button */}
+      <Link to={`/restaurants/${restaurant.id}/menu`}>
+        <button className="view-menu-btn">View Menu</button>
+      </Link>
+
       <Link to={`/restaurants/${restaurant.id}/edit`}>
         <button className="edit-btn">Edit</button>
       </Link>

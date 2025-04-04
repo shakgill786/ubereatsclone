@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getMenuItemsByRestaurantId } from "../../../store/menuItems";
-import MenuItemCard from "../MenuItemCard";
+import { getMenuItemsForRestaurantThunk } from "../../../redux/menuItems";
+import MenuItemCard from "../MenuItemCard/MenuItemCard";
 import "./MenuItemsPage.css";
 
 export default function MenuItemsPage() {
@@ -11,7 +11,7 @@ export default function MenuItemsPage() {
   const menuItems = useSelector(state => state.menuItems.restaurantMenuItems);
 
   useEffect(() => {
-    dispatch(getMenuItemsByRestaurantId(id));
+    dispatch(getMenuItemsForRestaurantThunk(id));
   }, [dispatch, id]);
 
   return (

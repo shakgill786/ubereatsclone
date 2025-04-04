@@ -6,11 +6,22 @@ import RestaurantsPage from "../components/restaurants/RestaurantsPage";
 import CreateRestaurantForm from "../components/restaurants/CreateRestaurantForm";
 import EditRestaurantForm from "../components/restaurants/EditRestaurantForm";
 import RestaurantDetailPage from "../components/restaurants/RestaurantDetailPage";
-import DashboardPage from "../components/dashboard/DashboardPage"; 
+import DashboardPage from "../components/dashboard/DashboardPage";
+import MenuItemsPage from "../components/MenuItem/MenuItemsPage/MenuItemsPage";
+
+
+// Basic fallback error element (replace with your custom design if you want)
+const ErrorElement = () => (
+  <div style={{ padding: "2rem", textAlign: "center" }}>
+    <h1>Oops! Something went wrong 😬</h1>
+    <p>Please try refreshing or navigating back.</p>
+  </div>
+);
 
 export const router = createBrowserRouter([
   {
     element: <Layout />,
+    errorElement: <ErrorElement />, // Global error fallback
     children: [
       {
         path: "/",
@@ -41,7 +52,11 @@ export const router = createBrowserRouter([
         element: <RestaurantDetailPage />,
       },
       {
-        path: "dashboard", // ✅ Dashboard route
+        path: "restaurants/:id/menu",
+        element: <MenuItemsPage />, // ✅ Add menu page route
+      },
+      {
+        path: "dashboard",
         element: <DashboardPage />,
       },
     ],

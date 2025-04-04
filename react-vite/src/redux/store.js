@@ -6,11 +6,11 @@ import {
 } from "redux";
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
-import menuItemsReducer from "./menuItems"; // ✅ import your new menuItems reducer
+import menuItemsReducer from "./menuItems"; // ✅ Add this line
 
 const rootReducer = combineReducers({
   session: sessionReducer,
-  menuItems: menuItemsReducer, // ✅ add menuItems to root reducer
+  menuItems: menuItemsReducer, // ✅ Register here
 });
 
 let enhancer;

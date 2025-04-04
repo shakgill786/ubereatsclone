@@ -15,6 +15,8 @@ class Restaurant(db.Model):
     user = db.relationship("User", backref="restaurants")
     favorited_by = db.relationship("Favorite", back_populates="restaurant", cascade="all, delete-orphan")
 
+    menu_items = db.relationship("MenuItem", back_populates="restaurant", cascade="all, delete-orphan")
+
     def to_dict(self):
         return {
             "id": self.id,
