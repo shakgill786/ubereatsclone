@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from ..models.db import MenuItem, db
+from ..models import db, MenuItem
 from ..forms.menu_item_form import MenuItemForm
 from flask_login import login_required
 import datetime

@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "restaurants/:id/menu",
-        element: <MenuItemsPage />, // ✅ Add menu page route
+        element: <MenuItemsPage />, 
       },
       {
         path: "dashboard",

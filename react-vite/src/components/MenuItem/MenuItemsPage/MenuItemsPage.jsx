@@ -8,7 +8,7 @@ import "./MenuItemsPage.css";
 export default function MenuItemsPage() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const menuItems = useSelector(state => state.menuItems.restaurantMenuItems);
+  const menuItems = useSelector(state => state.menuItems.allMenuItems || []);
 
   useEffect(() => {
     dispatch(getMenuItemsForRestaurantThunk(id));
