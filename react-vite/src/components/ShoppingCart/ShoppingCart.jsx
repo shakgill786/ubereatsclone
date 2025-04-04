@@ -1,13 +1,13 @@
-import { useEffect, useState, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { useShoppingCart } from '../../context/ShoppingCart';
-import { getAllRestaurantsWithOneMenuItemThunk } from '../../store/restaurant'; // ✅ required
-import './ShoppingCart.css';
+import { useEffect, useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom"; // ✅ FIX: useNavigate for React Router v6
+import { useShoppingCart } from "../../context/ShoppingCart";
+import { getAllRestaurantsWithOneMenuItemThunk } from "../../redux/restaurant"; // ✅ FIXED import path
+import "./ShoppingCart.css";
 
-export default function ShoppingCartModal() {
+export default function ShoppingCart() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate(); // ✅ FIXED useNavigate
   const ulRef = useRef();
 
   const { cart, setCart } = useShoppingCart();
@@ -40,14 +40,14 @@ export default function ShoppingCartModal() {
       }
     };
 
-    document.addEventListener('click', closeMenu);
-    return () => document.removeEventListener('click', closeMenu);
+    document.addEventListener("click", closeMenu);
+    return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
   const toggleCart = () => setShowMenu(!showMenu);
 
   const handleCheckout = () => {
-    history.push('/checkout');
+    navigate("/checkout");
     setShowMenu(false);
   };
 
@@ -61,7 +61,7 @@ export default function ShoppingCartModal() {
     }
   };
 
-  const ulClassName = 'cart-dropdown' + (showMenu ? '' : ' hidden');
+  const ulClassName = "cart-dropdown" + (showMenu ? "" : " hidden");
 
   return (
     <>
@@ -77,9 +77,15 @@ export default function ShoppingCartModal() {
                 <button onClick={() => setShowMenu(false)} className="close-cart">
                   <i className="fa-solid fa-x"></i>
                 </button>
-                <div className="cart-restaurant">{restaurants[cart[0].restaurantId]?.name}</div>
-                <div className="cart-restaurant-address">{restaurants[cart[0].restaurantId]?.streetAddress}</div>
-                <div className="cart-quantity">{cart.length} {cart.length === 1 ? "item" : "items"}</div>
+                <div className="cart-restaurant">
+                  {restaurants[cart[0].restaurantId]?.name}
+                </div>
+                <div className="cart-restaurant-address">
+                  {restaurants[cart[0].restaurantId]?.streetAddress}
+                </div>
+                <div className="cart-quantity">
+                  {cart.length} {cart.length === 1 ? "item" : "items"}
+                </div>
                 <div className="cart-item-list">
                   {cart.map((item, idx) => (
                     <div className="item-entry" key={idx}>
@@ -87,7 +93,10 @@ export default function ShoppingCartModal() {
                       <div className="item-entry-right">
                         <div>${item.price.toFixed(2)}</div>
                         <div>
-                          <button className="item-entry-delete" onClick={(e) => deleteItem(e, item.id)}>
+                          <button
+                            className="item-entry-delete"
+                            onClick={(e) => deleteItem(e, item.id)}
+                          >
                             <i className="fa-regular fa-trash-can"></i>
                           </button>
                         </div>
@@ -101,11 +110,17 @@ export default function ShoppingCartModal() {
                 </div>
               </div>
               <div className="cart-buttons">
-                <button className="cart-checkout" onClick={handleCheckout}>Go to checkout</button>
-                <button onClick={() => {
-                  history.push(`/restaurants/${cart[0].restaurantId}/menu`);
-                  setShowMenu(false);
-                }}>Add items</button>
+                <button className="cart-checkout" onClick={handleCheckout}>
+                  Go to checkout
+                </button>
+                <button
+                  onClick={() => {
+                    navigate(`/restaurants/${cart[0].restaurantId}/menu`);
+                    setShowMenu(false);
+                  }}
+                >
+                  Add items
+                </button>
               </div>
             </div>
           ) : (
@@ -118,7 +133,9 @@ export default function ShoppingCartModal() {
                   <div className="cart">
                     <img src="/emptycart.png" alt="empty cart" />
                   </div>
-                  <div className="empty-card-header">Add items to start your cart</div>
+                  <div className="empty-card-header">
+                    Add items to start your cart
+                  </div>
                 </div>
               </div>
             </div>
