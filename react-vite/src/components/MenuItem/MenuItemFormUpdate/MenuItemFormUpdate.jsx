@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
-import MenuItemForm from '../MenuItemForm';
+import MenuItemForm from "../MenuItemForm/MenuItemForm";
+
 
 export default function MenuItemFormUpdate({ menuItem }) {
   const dispatch = useDispatch();

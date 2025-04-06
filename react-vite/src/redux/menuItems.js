@@ -1,5 +1,4 @@
-// react-vite/src/redux/menuItems.js
-import { getCookie } from "../utils/csrf";
+// redux/menuItems.js
 
 // Action Types
 const LOAD_MENU_ITEMS = "menuItems/LOAD_MENU_ITEMS";
@@ -17,26 +16,6 @@ const setSingleMenuItem = (item) => ({
 });
 
 // Thunks
-export const createMenuItemThunk = (itemData) => async (dispatch) => {
-  const res = await fetch(`/api/restaurants/${itemData.restaurant_id}/menu-items`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(itemData),
-    credentials: "include",
-  });
-
-  if (res.ok) {
-    const data = await res.json();
-    dispatch(getMenuItemsForRestaurantThunk(itemData.restaurant_id)); // Refresh the list
-    return data;
-  } else {
-    const data = await res.json();
-    return data;
-  }
-};
-
 export const getMenuItemsForRestaurantThunk = (restaurantId) => async (dispatch) => {
   const res = await fetch(`/api/restaurants/${restaurantId}/menu-items`);
   if (res.ok) {
@@ -45,13 +24,38 @@ export const getMenuItemsForRestaurantThunk = (restaurantId) => async (dispatch)
   }
 };
 
-export const getOneMenuItemThunk = (id) => async (dispatch) => {
-  const res = await fetch(`/api/menu-items/${id}`);
+export const createMenuItemForRestThunk = (itemData) => async (dispatch) => {
+  const res = await fetch(`/api/restaurants/${itemData.restaurantId}/menu-items`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(itemData),
+    credentials: "include",
+  });
+
+  const data = await res.json();
   if (res.ok) {
-    const data = await res.json();
-    dispatch(setSingleMenuItem(data));
-    return data;
+    dispatch(getMenuItemsForRestaurantThunk(itemData.restaurantId));
   }
+  return data;
+};
+
+export const updateMenuItemThunk = (menuItem) => async (dispatch) => {
+  const res = await fetch(`/api/menu-items/${menuItem.id}/update`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(menuItem),
+    credentials: "include",
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    dispatch(getMenuItemsForRestaurantThunk(menuItem.restaurantId));
+  }
+  return data;
 };
 
 // Reducer

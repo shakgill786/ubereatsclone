@@ -61,3 +61,23 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 20px;
   }
+  
+  .menu-items-page-controls {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .menu-items-page-controls button {
+    padding: 10px 16px;
+    font-size: 14px;
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .menu-items-page-controls button:hover {
+    background-color: #1b5e20;
+  }

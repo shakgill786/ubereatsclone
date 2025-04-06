@@ -1,4 +1,4 @@
-import MenuItemForm from '../MenuItemForm';
+import MenuItemForm from "../MenuItemForm/MenuItemForm";
 
 export default function MenuItemFormCreate({ restIdAsNum }) {
 

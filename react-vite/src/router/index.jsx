@@ -9,7 +9,6 @@ import RestaurantDetailPage from "../components/restaurants/RestaurantDetailPage
 import DashboardPage from "../components/dashboard/DashboardPage";
 import MenuItemsPage from "../components/MenuItem/MenuItemsPage/MenuItemsPage";
 
-
 // Basic fallback error element (replace with your custom design if you want)
 const ErrorElement = () => (
   <div style={{ padding: "2rem", textAlign: "center" }}>
@@ -21,44 +20,17 @@ const ErrorElement = () => (
 export const router = createBrowserRouter([
   {
     element: <Layout />,
-    errorElement: <ErrorElement />, // Global error fallback
+    errorElement: <ErrorElement />,
     children: [
-      {
-        path: "/",
-        element: <RestaurantsPage />,
-      },
-      {
-        path: "login",
-        element: <LoginFormPage />,
-      },
-      {
-        path: "signup",
-        element: <SignupFormPage />,
-      },
-      {
-        path: "restaurants",
-        element: <RestaurantsPage />,
-      },
-      {
-        path: "restaurants/new",
-        element: <CreateRestaurantForm />,
-      },
-      {
-        path: "restaurants/:id/edit",
-        element: <EditRestaurantForm />,
-      },
-      {
-        path: "restaurants/:id",
-        element: <RestaurantDetailPage />,
-      },
-      {
-        path: "restaurants/:id/menu",
-        element: <MenuItemsPage />, 
-      },
-      {
-        path: "dashboard",
-        element: <DashboardPage />,
-      },
+      { path: "/", element: <RestaurantsPage /> },
+      { path: "login", element: <LoginFormPage /> },
+      { path: "signup", element: <SignupFormPage /> },
+      { path: "restaurants", element: <RestaurantsPage /> },
+      { path: "restaurants/new", element: <CreateRestaurantForm /> },
+      { path: "restaurants/:id/edit", element: <EditRestaurantForm /> },
+      { path: "restaurants/:id", element: <RestaurantDetailPage /> },
+      { path: "restaurants/:id/menu", element: <MenuItemsPage /> },
+      { path: "dashboard", element: <DashboardPage /> },
     ],
   },
 ]);

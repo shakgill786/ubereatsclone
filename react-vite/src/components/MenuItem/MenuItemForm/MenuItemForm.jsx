@@ -1,24 +1,25 @@
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { useModal } from "../../context/Modal";
-import { createImageFileAndUrl, deleteImageFileMenuItem } from "../../store/image"
-import { createMenuItemForRestThunk } from "../../store/menuItems";
-import { updateMenuItemThunk } from "../../store/menuItems";
+import { useModal } from "../../../context/Modal";
+import { createImageFileAndUrl, deleteImageFileMenuItem } from "../../../redux/image";
+import { createMenuItemForRestThunk } from "../../../redux/menuItems";
+import { updateMenuItemThunk } from "../../../redux/menuItems";
 import './MenuItemForm.css';
 
 export default function MenuItemForm({ formType, menuItem }) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { closeModal } = useModal();
-  const restaurantId = menuItem.restaurantId;
 
-  const [name, setName] = useState(menuItem?.name);
-  const [type, setType] = useState(menuItem?.type);
-  const [price, setPrice] = useState(menuItem?.price);
-  const [description, setDescription] = useState(menuItem?.description);
-  const [imageFile, setImageFile] = useState('');
-  const [imageUrl, setImageUrl] = useState(menuItem?.imageUrl);
+  const restaurantId = menuItem?.restaurantId;
+
+  const [name, setName] = useState(menuItem?.name || "");
+  const [type, setType] = useState(menuItem?.type || "");
+  const [price, setPrice] = useState(menuItem?.price || "");
+  const [description, setDescription] = useState(menuItem?.description || "");
+  const [imageFile, setImageFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(menuItem?.imageUrl || "");
   const [imageFileUpdated, setImageFileUpdated] = useState(false);
 
   const [disabled, setDisabled] = useState(false);
@@ -50,11 +51,11 @@ export default function MenuItemForm({ formType, menuItem }) {
         return resCreateImg;
       }
 
-      try { // CREATE MENU ITEM
-        const res = await dispatch(createMenuItemForRestThunk(menuItem)); // VScode gives note about not needing 'await', but it IS needed
+      try {
+        const res = await dispatch(createMenuItemForRestThunk(menuItem));
         if (res.id) {
           setErrors({});
-          history.push(`/restaurants/${restaurantId}/menu/manage`);
+          navigate(`/restaurants/${restaurantId}/menu/manage`);
           closeModal();
         } else if (res.errors) {
           setErrors(res.errors);
@@ -93,11 +94,11 @@ export default function MenuItemForm({ formType, menuItem }) {
         return resDeleteImg;
       }
 
-      try { // UPDATE MENU ITEM
-        const res = await dispatch(updateMenuItemThunk(menuItem)); // VScode notes not needing 'await', but it IS needed
+      try {
+        const res = await dispatch(updateMenuItemThunk(menuItem));
         if (res.id) {
           setErrors({});
-          history.push(`/restaurants/${restaurantId}/menu/manage`);
+          navigate(`/restaurants/${restaurantId}/menu/manage`);
           closeModal();
         } else {
           return res;
@@ -120,11 +121,11 @@ export default function MenuItemForm({ formType, menuItem }) {
         imageUrl
       };
 
-      try { // UPDATE MENU ITEM
-        const res = await dispatch(updateMenuItemThunk(menuItem)); // VScode notes not needing 'await', but it IS needed
+      try {
+        const res = await dispatch(updateMenuItemThunk(menuItem));
         if (res.id) {
           setErrors({});
-          history.push(`/restaurants/${restaurantId}/menu/manage`);
+          navigate(`/restaurants/${restaurantId}/menu/manage`);
           closeModal();
         } else {
           return res;
@@ -194,7 +195,7 @@ useEffect(() => {
               value={type}
               required
             >
-              <option value="" disabled selected>Type</option>
+              <option value="" disabled>Type</option>
               <option key='appetizer' value='appetizer'>Appetizer</option>
               <option key='entree' value='entree'>Entree</option>
               <option key='dessert' value='dessert'>Dessert</option>
