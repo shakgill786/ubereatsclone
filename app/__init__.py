@@ -10,14 +10,12 @@ from .api.auth_routes import auth_routes
 from .api.restaurant_routes import restaurant_routes
 from .api.favorite_routes import favorite_routes
 from .api.menu_item_routes import menu_item_routes
-from .seeds import seed_commands
+from .api.image_routes import image_routes
 from .seeds import seed_commands, auto_seed_if_empty
 from .config import Config
 
-
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
-# Setup login manager
 login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
 
@@ -25,25 +23,24 @@ login.login_view = 'auth.unauthorized'
 def load_user(id):
     return User.query.get(int(id))
 
-# CLI seed
+# Register CLI
 app.cli.add_command(seed_commands)
 
-# Config
+# Config and DB
 app.config.from_object(Config)
 db.init_app(app)
-with app.app_context():
-    auto_seed_if_empty()
 Migrate(app, db)
 
-# Enable CORS with cookies
+# CORS
 CORS(app, supports_credentials=True)
 
-# Register blueprints
+# Blueprints
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(restaurant_routes, url_prefix='/api/restaurants')
 app.register_blueprint(favorite_routes, url_prefix='/api/favorites')
-app.register_blueprint(menu_item_routes, url_prefix='/api/menu-items') 
+app.register_blueprint(menu_item_routes, url_prefix='/api/menu-items')
+app.register_blueprint(image_routes, url_prefix='/api/images')
 
 @app.before_request
 def https_redirect():
@@ -59,26 +56,24 @@ def inject_csrf_token(response):
         generate_csrf(),
         secure=os.environ.get('FLASK_ENV') == 'production',
         samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
-        httponly=False  # Allows frontend to access via getCookie()
+        httponly=False
     )
     return response
 
 @app.route("/api/csrf/restore")
 def restore_csrf():
-    """Sets the CSRF cookie"""
     return {"message": "CSRF cookie set"}
 
 @app.route("/api/docs")
 def api_help():
     acceptable_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
-    route_list = {
+    return {
         rule.rule: [
             [method for method in rule.methods if method in acceptable_methods],
             app.view_functions[rule.endpoint].__doc__
         ]
         for rule in app.url_map.iter_rules() if rule.endpoint != 'static'
     }
-    return route_list
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
