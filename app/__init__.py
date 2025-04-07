@@ -11,6 +11,7 @@ from .api.restaurant_routes import restaurant_routes
 from .api.favorite_routes import favorite_routes
 from .api.menu_item_routes import menu_item_routes
 from .seeds import seed_commands
+from .seeds import seed_commands, auto_seed_if_empty
 from .config import Config
 
 
@@ -30,6 +31,8 @@ app.cli.add_command(seed_commands)
 # Config
 app.config.from_object(Config)
 db.init_app(app)
+with app.app_context():
+    auto_seed_if_empty()
 Migrate(app, db)
 
 # Enable CORS with cookies

@@ -3,7 +3,7 @@ from app.models import db, User
 from sqlalchemy.sql import text
 import os
 
-# ✅ Import other seed functions
+# Import other seed functions
 from .restaurant_seeds import seed_restaurants, undo_restaurants
 from .menu_item_seeds import seed_menu_items, undo_menu_items
 from .favorite_seeds import seed_favorites, undo_favorites
@@ -12,10 +12,10 @@ from .favorite_seeds import seed_favorites, undo_favorites
 environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
 
-# CLI seed command group
+# CLI group for seeding via terminal
 seed_commands = AppGroup('seed')
 
-# ✅ Seed users with hashed passwords
+# SEED USERS
 def seed_users():
     users = [
         User(username="shak", email="shak@example.com", password="password1"),
@@ -25,7 +25,7 @@ def seed_users():
     db.session.add_all(users)
     db.session.commit()
 
-# ✅ Undo user seed data
+# UNDO USERS
 def undo_users():
     if environment == "production":
         db.session.execute(text(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;"))
@@ -33,7 +33,7 @@ def undo_users():
         db.session.execute(text("DELETE FROM users"))
     db.session.commit()
 
-# ✅ Run all seed commands
+# FLASK COMMAND: SEED ALL
 @seed_commands.command('all')
 def seed():
     if environment == 'production':
@@ -43,22 +43,32 @@ def seed():
         db.session.execute(text(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;"))
         db.session.commit()
 
-    # Undo first to prevent collisions
     undo_favorites()
     undo_menu_items()
     undo_restaurants()
     undo_users()
 
-    # Reseed everything
     seed_users()
     seed_restaurants()
     seed_menu_items()
     seed_favorites()
 
-# ✅ Undo all seed data
+# FLASK COMMAND: UNDO ALL
 @seed_commands.command('undo')
 def undo():
     undo_favorites()
     undo_menu_items()
     undo_restaurants()
     undo_users()
+
+
+def auto_seed_if_empty():
+    from app.models import User
+    try:
+        if not User.query.first():
+            print("🚀 Running auto seed...")
+            seed()
+        else:
+            print("✅ Users already exist. Skipping seed.")
+    except Exception as e:
+        print("❌ Auto-seed error:", e)
