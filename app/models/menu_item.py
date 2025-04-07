@@ -1,10 +1,13 @@
 # app/models/menu_item.py
 
-from .db import db
+from .db import db, environment, SCHEMA, add_prefix_for_prod
 from datetime import datetime
 
 class MenuItem(db.Model):
     __tablename__ = 'menu_items'
+
+    if environment == "production":
+        __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -12,7 +15,11 @@ class MenuItem(db.Model):
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.String(255))
     image_url = db.Column(db.String(255), nullable=False)
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), nullable=False)
+    restaurant_id = db.Column(
+        db.Integer,
+        db.ForeignKey(add_prefix_for_prod("restaurants.id")),
+        nullable=False
+    )
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow)
 
