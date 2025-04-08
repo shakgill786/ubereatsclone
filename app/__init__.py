@@ -27,10 +27,16 @@ def load_user(id):
 # Register CLI
 app.cli.add_command(seed_commands)
 
-# Config and DB
+# ✅ Config and DB setup
 app.config.from_object(Config)
 db.init_app(app)
-Migrate(app, db)
+
+# ✅ Register Flask-Migrate properly
+migrate = Migrate(app, db)
+
+with app.app_context():
+     from flask_migrate import upgrade
+     upgrade()
 
 # CORS
 CORS(app, supports_credentials=True)

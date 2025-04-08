@@ -12,7 +12,9 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+
     favorites = db.relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
+    cart_items = db.relationship('CartItem', back_populates='user', cascade='all, delete-orphan')  # ✅ Moved inside
 
     @property
     def password(self):
@@ -31,4 +33,3 @@ class User(db.Model, UserMixin):
             'username': self.username,
             'email': self.email
         }
-cart_items = db.relationship('CartItem', back_populates='user', cascade='all, delete-orphan')
