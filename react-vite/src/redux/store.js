@@ -6,13 +6,15 @@ import {
 } from "redux";
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
-import menuItemsReducer from "./menuItems"; 
-import restaurantReducer from "./restaurant"; // ✅ Add this
+import menuItemsReducer from "./menuItems";
+import restaurantReducer from "./restaurant";
+import reviewReducer from "./reviews";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   menuItems: menuItemsReducer,
-  restaurant: restaurantReducer, // ✅ Register here
+  restaurant: restaurantReducer,
+  reviews: reviewReducer,
 });
 
 let enhancer;
@@ -30,4 +32,3 @@ const configureStore = (preloadedState) => {
 };
 
 export default configureStore;
-
