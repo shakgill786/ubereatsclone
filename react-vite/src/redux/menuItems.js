@@ -1,5 +1,3 @@
-// redux/menuItems.js
-
 // Action Types
 const LOAD_MENU_ITEMS = "menuItems/LOAD_MENU_ITEMS";
 const SET_SINGLE_MENU_ITEM = "menuItems/SET_SINGLE_MENU_ITEM";
@@ -17,45 +15,59 @@ const setSingleMenuItem = (item) => ({
 
 // Thunks
 export const getMenuItemsForRestaurantThunk = (restaurantId) => async (dispatch) => {
-  const res = await fetch(`/api/restaurants/${restaurantId}/menu-items`);
-  if (res.ok) {
-    const data = await res.json();
-    dispatch(loadMenuItems(data.menuItems));
+  try {
+    const res = await fetch(`/api/restaurants/${restaurantId}/menu-items`);
+    if (res.ok) {
+      const data = await res.json();
+      dispatch(loadMenuItems(data.menuItems));
+    }
+  } catch (err) {
+    console.error("❌ Failed to load menu items:", err);
   }
 };
 
 export const createMenuItemForRestThunk = (itemData) => async (dispatch) => {
-  const res = await fetch(`/api/restaurants/${itemData.restaurantId}/menu-items`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(itemData),
-    credentials: "include",
-  });
+  try {
+    const res = await fetch(`/api/menu-items/create/${itemData.restaurantId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(itemData),
+    });
 
-  const data = await res.json();
-  if (res.ok) {
-    dispatch(getMenuItemsForRestaurantThunk(itemData.restaurantId));
+    const data = await res.json();
+    if (res.ok) {
+      dispatch(getMenuItemsForRestaurantThunk(itemData.restaurantId));
+    }
+    return data;
+  } catch (err) {
+    console.error("❌ Error creating menu item:", err);
+    return { errors: ["Menu item creation failed."] };
   }
-  return data;
 };
 
 export const updateMenuItemThunk = (menuItem) => async (dispatch) => {
-  const res = await fetch(`/api/menu-items/${menuItem.id}/update`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(menuItem),
-    credentials: "include",
-  });
+  try {
+    const res = await fetch(`/api/menu-items/${menuItem.id}/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(menuItem),
+    });
 
-  const data = await res.json();
-  if (res.ok) {
-    dispatch(getMenuItemsForRestaurantThunk(menuItem.restaurantId));
+    const data = await res.json();
+    if (res.ok) {
+      dispatch(getMenuItemsForRestaurantThunk(menuItem.restaurantId));
+    }
+    return data;
+  } catch (err) {
+    console.error("❌ Error updating menu item:", err);
+    return { errors: ["Menu item update failed."] };
   }
-  return data;
 };
 
 // Reducer

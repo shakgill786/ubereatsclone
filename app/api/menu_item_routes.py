@@ -41,7 +41,7 @@ def delete_menu_item(id):
     db.session.commit()
     return {"message": "Successfully deleted menu item", "id": id}
 
-@menu_item_routes.route('/restaurant/<int:restaurant_id>/menu-items', methods=['POST'])
+@menu_item_routes.route('/create/<int:restaurant_id>', methods=['POST'])
 @login_required
 def create_menu_item(restaurant_id):
     form = MenuItemForm()

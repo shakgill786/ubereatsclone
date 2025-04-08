@@ -60,13 +60,11 @@ export default function MenuItemForm({ formType, menuItem }) {
         } else if (res.errors) {
           setErrors(res.errors);
         }
-      } catch (res) {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
+      } catch (err) {
+        console.error("Menu item creation error:", err);
+        setErrors({ server: "Failed to create menu item." });
       }
-
+      
       /////// 2. UPDATE IMAGE + UPDATE MENU ITEM
     } else if (formType === 'Update Menu Item' && imageFileUpdated) {
       try { // UPDATE IMAGE
