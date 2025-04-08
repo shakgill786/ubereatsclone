@@ -43,7 +43,7 @@ export default function MenuItemForm({ formType, menuItem }) {
             type,
             price,
             description,
-            imageUrl: resCreateImg.url,
+            image_url: resCreateImg.url,
             restaurantId
           };
         }
@@ -81,7 +81,7 @@ export default function MenuItemForm({ formType, menuItem }) {
               type,
               price,
               description,
-              imageUrl: resCreateImg.url,
+              image_url: resCreateImg.url,
               restaurantId
             };
           }
@@ -116,7 +116,7 @@ export default function MenuItemForm({ formType, menuItem }) {
         type,
         price,
         description,
-        imageUrl
+        image_url
       };
 
       try {
