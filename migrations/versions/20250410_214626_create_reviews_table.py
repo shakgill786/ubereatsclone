@@ -1,17 +1,21 @@
 """create reviews table
 
-Revision ID: fba849bac8ba
-Revises: 9d7c967266ed
-Create Date: 2025-04-02 21:46:26.515678
+Revision ID: fba849bac8bq
+Revises: 
+Create Date: 2025-04-10 21:46:26.515678
 
 """
 from alembic import op
 import sqlalchemy as sa
+import os
 
+
+environment = os.getenv("FLASK_ENV")
+SCHEMA = os.environ.get("SCHEMA")
 
 # revision identifiers, used by Alembic.
-revision = 'fba849bac8ba'
-down_revision = '9d7c967266ed'
+revision = 'fba849bac8bq'
+down_revision = None
 branch_labels = None
 depends_on = None
 
