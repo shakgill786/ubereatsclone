@@ -33,9 +33,9 @@ function LoginFormPage() {
   };
 
   return (
-    <>
+    <div className="login-page-container">
       <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
         {errors.map((err, i) => (
           <p key={i} className="error">{err}</p>
         ))}
@@ -60,9 +60,9 @@ function LoginFormPage() {
           />
         </label>
 
-        <button type="submit">Log In</button>
+        <button type="submit" className="login-button">Log In</button>
       </form>
-    </>
+    </div>
   );
 }
 

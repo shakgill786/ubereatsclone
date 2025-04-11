@@ -1,8 +1,11 @@
+// src/components/Navigation/index.jsx
 import { NavLink } from "react-router-dom";
 import ProfileButton from "./ProfileButton";
 import { useDispatch, useSelector } from "react-redux";
 import { thunkLogout } from "../../redux/session";
 import "./Navigation.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 function Navigation() {
   const dispatch = useDispatch();
@@ -20,37 +23,49 @@ function Navigation() {
 
   return (
     <nav className="navbar">
-      {/* Left logo */}
-      <div className="navbar-logo">
-        <NavLink to="/">
+      {/* Left side: Hamburger and Logo */}
+      <div className="navbar-left">
+        <button className="menu-button">
+          <i className="fa-solid fa-bars"></i>
+        </button>
+        <NavLink to="/" className="logo-link">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/9/96/UNESCO_logo.svg"
-            alt="Logo"
+            src="/ForkYeah.jpg"
+            alt="ForkYeah Logo"
             className="logo"
           />
         </NavLink>
       </div>
 
-      {/* Center title */}
-      <div className="navbar-title">Luxury Eats</div>
+      {/* Middle: Delivery/Pickup, Location, Search */}
+      <div className="navbar-middle">
+        <div className="delivery-options">
+          <button className="delivery-button">Delivery</button>
+          <button className="pickup-button">Pickup</button>
+        </div>
+        <div className="location">📍 123 App Academy Lane</div>
+        <div className="search-bar">
+          <input type="text" placeholder="Search ForkYeah!" />
+        </div>
+      </div>
 
-      {/* Right nav links */}
-      <div className="navbar-links">
-        <NavLink to="/" className="nav-link">Home</NavLink>
-
-        {user && (
-          <NavLink to="/dashboard" className="nav-link">Dashboard</NavLink>
-        )}
+      {/* Right side: Cart, Login, Signup/Profile */}
+      <div className="navbar-right">
+        <NavLink to="/cart" className="cart-button">
+          <i className="fa-solid fa-cart-shopping"></i>
+        </NavLink>
 
         {user ? (
           <>
-            <span className="welcome-user">Welcome, {capitalize(user.username)}</span>
-            <button className="logout-btn" onClick={logout}>Log Out</button>
+            <span className="welcome-user">Hi, {capitalize(user.username)}</span>
+            <button className="logout-btn" onClick={logout}>
+              Log Out
+            </button>
           </>
         ) : (
           <>
             <NavLink to="/login" className="nav-link">Log In</NavLink>
-            <NavLink to="/signup" className="nav-link">Sign Up</NavLink>
+            <NavLink to="/signup" className="nav-link signup-button">Sign Up</NavLink>
           </>
         )}
 
