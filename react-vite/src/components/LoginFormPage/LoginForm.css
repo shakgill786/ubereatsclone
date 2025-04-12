@@ -1,0 +1,75 @@
+/* src/components/LoginFormPage/LoginFormPage.css */
+
+/* Page wrapper to center content */
+.login-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+  }
+
+  /* Title styling */
+  .login-page-container h1 {
+    margin-bottom: 20px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  /* Form itself */
+  .login-form {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  /* Input fields */
+  .login-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+  /* Labels */
+  .login-form label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+  }
+
+  /* Submit button */
+  .login-button {
+    padding: 12px;
+    background-color: #000;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .login-button:hover {
+    background-color: #333;
+  }
+
+  /* Error messages */
+  .error {
+    color: red;
+    font-size: 14px;
+  }

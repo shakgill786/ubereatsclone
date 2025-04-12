@@ -1,4 +1,3 @@
-// src/components/restaurants/RestaurantsPage.jsx
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getCookie } from "../../utils/csrf";
@@ -8,17 +7,26 @@ import "./RestaurantsPage.css";
 export default function RestaurantsPage() {
   const [restaurants, setRestaurants] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
   const user = useSelector((state) => state.session.user);
+
+  // Scroll functions
+  const scrollLeft = () => {
+    const row = document.querySelector(".restaurant-scroll-row");
+    if (row) row.scrollBy({ left: -300, behavior: "smooth" });
+  };
+
+  const scrollRight = () => {
+    const row = document.querySelector(".restaurant-scroll-row");
+    if (row) row.scrollBy({ left: 300, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch("/api/restaurants");
       const data = await res.json();
 
-      // Generate mock info ONCE
       const ratings = [4.7, 4.8, 4.9, 5.0];
       const fees = ["$1.99", "$2.99", "Free", "$3.49"];
       const times = ["15–25 min", "20–30 min", "25–35 min"];
@@ -52,7 +60,7 @@ export default function RestaurantsPage() {
 
   const toggleFavorite = async (id) => {
     const csrfToken = getCookie("csrf_token");
-  
+
     const res = await fetch(`/api/favorites/${id}`, {
       method: "POST",
       headers: {
@@ -61,17 +69,16 @@ export default function RestaurantsPage() {
       },
       credentials: "include",
     });
-  
+
     if (res.ok) {
-      // ✅ After toggling, re-fetch full updated favorites
       const favRes = await fetch("/api/favorites", { credentials: "include" });
       if (favRes.ok) {
         const updated = await favRes.json();
-        setFavorites(updated.map((r) => r.id)); // only store IDs on RestaurantsPage
+        setFavorites(updated.map((r) => r.id));
       }
     }
   };
-  
+
   const handleAddToCart = (id) => {
     setCart((prev) => [...prev, id]);
     const button = document.getElementById(`add-to-cart-${id}`);
@@ -152,12 +159,22 @@ export default function RestaurantsPage() {
         </Link>
       </div>
 
-      <div className="restaurant-scroll-row">
-        {restaurants.slice(0, 6).map(renderCard)}
+      {/* Scroll Wrapper with Arrows */}
+      <div className="scroll-wrapper">
+        <button onClick={scrollLeft} className="scroll-button">‹</button>
+
+        <div className="restaurant-scroll-row">
+          {restaurants.slice(0, 6).map(renderCard)}
+        </div>
+
+        <button onClick={scrollRight} className="scroll-button">›</button>
       </div>
 
       <h2 className="section-title">All Restaurants</h2>
-      <div className="restaurant-grid">{restaurants.map(renderCard)}</div>
+
+      <div className="restaurant-grid">
+        {restaurants.map(renderCard)}
+      </div>
     </div>
   );
 }

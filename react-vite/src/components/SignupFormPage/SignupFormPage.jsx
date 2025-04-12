@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { thunkSignup } from "../../redux/session";
+import "./SignupForm.css";
 
 function SignupFormPage() {
   const dispatch = useDispatch();
@@ -21,9 +22,10 @@ function SignupFormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       return setErrors({
-        confirmPassword: "Confirm Password field must match Password",
+        confirmPassword: "Confirm Password field must be the same as the Password field",
       });
     }
 
@@ -46,54 +48,105 @@ function SignupFormPage() {
   };
 
   return (
-    <>
+    <div className="signup-page-wrapper">
       <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          First Name
-          <input value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-        </label>
-        {errors.first_name && <p>{errors.first_name}</p>}
 
-        <label>
-          Last Name
-          <input value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-        </label>
-        {errors.last_name && <p>{errors.last_name}</p>}
+      <form onSubmit={handleSubmit} className="signup-form">
+        <div className="name-fields">
+          <div className="input-group">
+            <label>
+              First Name
+              <input
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+            </label>
+            {errors.first_name && <p className="error">{errors.first_name}</p>}
+          </div>
 
-        <label>
-          Street Address
-          <input value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} required />
-        </label>
-        {errors.street_address && <p>{errors.street_address}</p>}
+          <div className="input-group">
+            <label>
+              Last Name
+              <input
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </label>
+            {errors.last_name && <p className="error">{errors.last_name}</p>}
+          </div>
+        </div>
 
-        <label>
-          Email
-          <input value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
+        <div className="input-group">
+          <label>
+            Street Address
+            <input
+              value={streetAddress}
+              onChange={(e) => setStreetAddress(e.target.value)}
+              required
+            />
+          </label>
+          {errors.street_address && (
+            <p className="error">{errors.street_address}</p>
+          )}
+        </div>
 
-        <label>
-          Username
-          <input value={username} onChange={(e) => setUsername(e.target.value)} required />
-        </label>
-        {errors.username && <p>{errors.username}</p>}
+        <div className="input-group">
+          <label>
+            Email
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
+          {errors.email && <p className="error">{errors.email}</p>}
+        </div>
 
-        <label>
-          Password
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
+        <div className="input-group">
+          <label>
+            Username
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </label>
+          {errors.username && <p className="error">{errors.username}</p>}
+        </div>
 
-        <label>
-          Confirm Password
-          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-        </label>
-        {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        <div className="input-group">
+          <label>
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+          {errors.password && <p className="error">{errors.password}</p>}
+        </div>
+
+        <div className="input-group">
+          <label>
+            Confirm Password
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </label>
+          {errors.confirmPassword && (
+            <p className="error">{errors.confirmPassword}</p>
+          )}
+        </div>
 
         <button type="submit">Sign Up</button>
       </form>
-    </>
+    </div>
   );
 }
 
