@@ -7,6 +7,7 @@ import os
 from .restaurant_seeds import seed_restaurants, undo_restaurants
 from .menu_item_seeds import seed_menu_items, undo_menu_items
 from .favorite_seeds import seed_favorites, undo_favorites
+#from .review_seeds import seed_reviews, undo_reviews  
 
 # Environment setup
 environment = os.getenv("FLASK_ENV")
@@ -36,7 +37,10 @@ def undo_users():
 # FLASK COMMAND: SEED ALL
 @seed_commands.command('all')
 def seed():
+    print("⚙️  Running full seed...")
+
     if environment == 'production':
+        db.session.execute(text(f"TRUNCATE table {SCHEMA}.reviews RESTART IDENTITY CASCADE;"))
         db.session.execute(text(f"TRUNCATE table {SCHEMA}.favorites RESTART IDENTITY CASCADE;"))
         db.session.execute(text(f"TRUNCATE table {SCHEMA}.menu_items RESTART IDENTITY CASCADE;"))
         db.session.execute(text(f"TRUNCATE table {SCHEMA}.restaurants RESTART IDENTITY CASCADE;"))
@@ -53,22 +57,30 @@ def seed():
     seed_menu_items()
     seed_favorites()
 
+    print("✅ Database seeded.")
+
 # FLASK COMMAND: UNDO ALL
 @seed_commands.command('undo')
 def undo():
+    print("🔁 Reverting seed...")
+    undo_reviews()       # ⬅️ Optional, if implemented
     undo_favorites()
     undo_menu_items()
     undo_restaurants()
     undo_users()
+    print("✅ Seed undo complete.")
 
 
-def auto_seed_if_empty():
-    from app.models import User
-    try:
-        if not User.query.first():
-            print("🚀 Running auto seed...")
-            seed()
-        else:
-            print("✅ Users already exist. Skipping seed.")
-    except Exception as e:
-        print("❌ Auto-seed error:", e)
+# ❌ DISABLED: Auto-seed on deploy causes Render crashes
+# Uncomment this only for local dev testing
+
+# def auto_seed_if_empty():
+#     from app.models import User
+#     try:
+#         if not User.query.first():
+#             print("🚀 Running auto seed...")
+#             seed()
+#         else:
+#             print("✅ Users already exist. Skipping seed.")
+#     except Exception as e:
+#         print("❌ Auto-seed error:", e)

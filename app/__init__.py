@@ -13,7 +13,7 @@ from .api.menu_item_routes import menu_item_routes
 from .api.image_routes import image_routes
 from .api.cart_routes import cart_routes
 from .api.review_routes import review_routes
-from .seeds import seed_commands, auto_seed_if_empty
+from .seeds import seed_commands
 from .config import Config
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
