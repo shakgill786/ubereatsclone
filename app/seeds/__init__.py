@@ -70,6 +70,7 @@ def undo():
     undo_users()
     print("✅ Seed undo complete.")
 
+print("✅ Flask app module loaded successfully.")
 
 # ❌ DISABLED: Auto-seed on deploy causes Render crashes
 # Uncomment this only for local dev testing
