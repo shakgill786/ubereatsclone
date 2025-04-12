@@ -23,16 +23,16 @@ function Navigation() {
       {/* Left logo */}
       <div className="navbar-logo">
         <NavLink to="/">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/9/96/UNESCO_logo.svg"
-            alt="Logo"
-            className="logo"
-          />
+        <img
+          src="/forkyeah-logo.png"
+          alt="ForkYeah Logo"
+          className="navbar-logo"
+        />
         </NavLink>
       </div>
 
       {/* Center title */}
-      <div className="navbar-title">Luxury Eats</div>
+      <h1 className="site-title">🍴 ForkYeah</h1>
 
       {/* Right nav links */}
       <div className="navbar-links">
