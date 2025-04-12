@@ -16,82 +16,81 @@ from .api.review_routes import review_routes
 from .seeds import seed_commands
 from .config import Config
 
-app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
+def create_app():
+    print("🌀 Starting create_app()...")
 
-# Setup login manager
-login = LoginManager(app)
-login.login_view = 'auth.unauthorized'
+    app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+    # Setup login manager
+    login = LoginManager(app)
+    login.login_view = 'auth.unauthorized'
 
-# CLI seed
-app.cli.add_command(seed_commands)
+    @login.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
 
-# Config and DB
-app.config.from_object(Config)
-db.init_app(app)
-migrate = Migrate(app, db)
+    # CLI seed
+    app.cli.add_command(seed_commands)
 
-#with app.app_context():
-    #from flask_migrate import upgrade
-    #upgrade()
+    # Config and DB
+    app.config.from_object(Config)
+    db.init_app(app)
+    Migrate(app, db)
+    CORS(app, supports_credentials=True)
 
-# Enable CORS with cookies
-CORS(app, supports_credentials=True)
+    # Register blueprints
+    app.register_blueprint(user_routes, url_prefix='/api/users')
+    app.register_blueprint(auth_routes, url_prefix='/api/auth')
+    app.register_blueprint(restaurant_routes, url_prefix='/api/restaurants')
+    app.register_blueprint(favorite_routes, url_prefix='/api/favorites')
+    app.register_blueprint(menu_item_routes, url_prefix='/api/menu-items')
+    app.register_blueprint(image_routes, url_prefix='/api/images')
+    app.register_blueprint(cart_routes, url_prefix='/api/cart_item')
+    app.register_blueprint(review_routes, url_prefix='/api/reviews')
 
-# Register blueprints
-app.register_blueprint(user_routes, url_prefix='/api/users')
-app.register_blueprint(auth_routes, url_prefix='/api/auth')
-app.register_blueprint(restaurant_routes, url_prefix='/api/restaurants')
-app.register_blueprint(favorite_routes, url_prefix='/api/favorites')
-app.register_blueprint(menu_item_routes, url_prefix='/api/menu-items')
-app.register_blueprint(image_routes, url_prefix='/api/images')
-app.register_blueprint(cart_routes, url_prefix='/api/cart_item')
-app.register_blueprint(review_routes, url_prefix='/api/reviews')
+    @app.before_request
+    def https_redirect():
+        if os.environ.get('FLASK_ENV') == 'production':
+            if request.headers.get('X-Forwarded-Proto') == 'http':
+                url = request.url.replace('http://', 'https://', 1)
+                return redirect(url, code=301)
 
-@app.before_request
-def https_redirect():
-    if os.environ.get('FLASK_ENV') == 'production':
-        if request.headers.get('X-Forwarded-Proto') == 'http':
-            url = request.url.replace('http://', 'https://', 1)
-            return redirect(url, code=301)
+    @app.after_request
+    def inject_csrf_token(response):
+        response.set_cookie(
+            'csrf_token',
+            generate_csrf(),
+            secure=os.environ.get('FLASK_ENV') == 'production',
+            samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
+            httponly=False
+        )
+        return response
 
-@app.after_request
-def inject_csrf_token(response):
-    response.set_cookie(
-        'csrf_token',
-        generate_csrf(),
-        secure=os.environ.get('FLASK_ENV') == 'production',
-        samesite='Strict' if os.environ.get('FLASK_ENV') == 'production' else None,
-        httponly=False  # Allows frontend to access via getCookie()
-    )
-    return response
+    @app.route("/api/csrf/restore")
+    def restore_csrf():
+        return {"message": "CSRF cookie set"}
 
-@app.route("/api/csrf/restore")
-def restore_csrf():
-    """Sets the CSRF cookie"""
-    return {"message": "CSRF cookie set"}
+    @app.route("/api/docs")
+    def api_help():
+        acceptable_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+        return {
+            rule.rule: [
+                [method for method in rule.methods if method in acceptable_methods],
+                app.view_functions[rule.endpoint].__doc__
+            ]
+            for rule in app.url_map.iter_rules() if rule.endpoint != 'static'
+        }
 
-@app.route("/api/docs")
-def api_help():
-    acceptable_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
-    return {
-        rule.rule: [
-            [method for method in rule.methods if method in acceptable_methods],
-            app.view_functions[rule.endpoint].__doc__
-        ]
-        for rule in app.url_map.iter_rules() if rule.endpoint != 'static'
-    }
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def react_root(path):
+        if path == 'favicon.ico':
+            return app.send_from_directory('public', 'favicon.ico')
+        return app.send_static_file('index.html')
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def react_root(path):
-    if path == 'favicon.ico':
-        return app.send_from_directory('public', 'favicon.ico')
-    return app.send_static_file('index.html')
+    @app.errorhandler(404)
+    def not_found(e):
+        return app.send_static_file('index.html')
 
-@app.errorhandler(404)
-def not_found(e):
-    return app.send_static_file('index.html')
+    print("✅ Flask app created successfully.")
+    return app
