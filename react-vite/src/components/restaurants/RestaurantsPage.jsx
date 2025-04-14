@@ -159,6 +159,14 @@ export default function RestaurantsPage() {
         </Link>
       </div>
 
+      {user && (
+        <div className="dashboard-link-container">
+          <Link to="/dashboard">
+            <button className="dashboard-btn">Your Dashboard</button>
+          </Link>
+        </div>
+      )}
+
       {/* Scroll Wrapper with Arrows */}
       <div className="scroll-wrapper">
         <button onClick={scrollLeft} className="scroll-button">‹</button>

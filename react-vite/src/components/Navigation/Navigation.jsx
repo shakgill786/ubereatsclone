@@ -1,4 +1,4 @@
-// src/components/Navigation/index.jsx
+// src/components/Navigation.jsx
 import { NavLink } from "react-router-dom";
 import ProfileButton from "./ProfileButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,6 +61,9 @@ function Navigation() {
         {user ? (
           <>
             <span className="welcome-user">Hi, {capitalize(user.username)}</span>
+            <NavLink to="/dashboard" className="nav-link dashboard-link">
+              Dashboard
+            </NavLink>
             <button className="logout-btn" onClick={logout}>
               Log Out
             </button>

@@ -190,6 +190,21 @@
   font-weight: bold;
 }
 
+.dashboard-btn {
+  margin-top: 10px;
+  background-color: #333;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.dashboard-btn:hover {
+  background-color: #555;
+}
+
 /* Responsive for smaller screens */
 @media (max-width: 768px) {
   .navbar-middle {
