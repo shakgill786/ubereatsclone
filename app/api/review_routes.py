@@ -15,7 +15,7 @@ def get_reviews():
 
 
 # Add New Review
-@review_routes.route('/', methods=['POST'])
+@review_routes.route('', methods=['POST'])  # ← no slash
 @login_required
 def create_review():
     """
