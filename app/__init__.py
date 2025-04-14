@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, redirect
 from flask_cors import CORS
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 from flask_wtf.csrf import generate_csrf
 from flask_login import LoginManager
 from .models import db, User
@@ -13,13 +13,15 @@ from .api.menu_item_routes import menu_item_routes
 from .api.image_routes import image_routes
 from .api.cart_routes import cart_routes
 from .api.review_routes import review_routes
-from .seeds import seed_commands
+from .seeds import seed_commands, seed
+
 from .config import Config
 
 def create_app():
     print("🌀 Starting create_app()...")
 
     app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
+    app.config.from_object(Config)
 
     # Setup login manager
     login = LoginManager(app)
@@ -29,13 +31,12 @@ def create_app():
     def load_user(id):
         return User.query.get(int(id))
 
-    # CLI seed
+    # CLI seed command
     app.cli.add_command(seed_commands)
 
-    # Config and DB
-    app.config.from_object(Config)
+    # DB + CORS
     db.init_app(app)
-    Migrate(app, db)
+    migrate = Migrate(app, db)
     CORS(app, supports_credentials=True)
 
     # Register blueprints
@@ -48,6 +49,7 @@ def create_app():
     app.register_blueprint(cart_routes, url_prefix='/api/cart_item')
     app.register_blueprint(review_routes, url_prefix='/api/reviews')
 
+    # HTTPS redirect for production
     @app.before_request
     def https_redirect():
         if os.environ.get('FLASK_ENV') == 'production':
@@ -55,6 +57,7 @@ def create_app():
                 url = request.url.replace('http://', 'https://', 1)
                 return redirect(url, code=301)
 
+    # CSRF cookie injection
     @app.after_request
     def inject_csrf_token(response):
         response.set_cookie(
@@ -91,6 +94,20 @@ def create_app():
     @app.errorhandler(404)
     def not_found(e):
         return app.send_static_file('index.html')
+
+    # 🚀 Auto-run migrations & seeding
+    @app.before_first_request
+    def run_migrations_and_seed():
+        print("🛠️ Auto-running migrations...")
+        with app.app_context():
+            upgrade()
+
+            # Only seed if no users exist
+            if not User.query.first():
+                print("🌱 Running auto seed...")
+                seed()
+            else:
+                print("✅ Users already exist. Skipping seed.")
 
     print("✅ Flask app created successfully.")
     return app
