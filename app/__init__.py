@@ -14,7 +14,6 @@ from .api.image_routes import image_routes
 from .api.cart_routes import cart_routes
 from .api.review_routes import review_routes
 from .seeds import seed_commands, seed
-
 from .config import Config
 
 def create_app():
@@ -34,9 +33,9 @@ def create_app():
     # CLI seed command
     app.cli.add_command(seed_commands)
 
-    # DB + CORS
+    # Initialize extensions
     db.init_app(app)
-    migrate = Migrate(app, db)
+    Migrate(app, db)
     CORS(app, supports_credentials=True)
 
     # Register blueprints
@@ -49,7 +48,7 @@ def create_app():
     app.register_blueprint(cart_routes, url_prefix='/api/cart_item')
     app.register_blueprint(review_routes, url_prefix='/api/reviews')
 
-    # HTTPS redirect for production
+    # Redirect to HTTPS in production
     @app.before_request
     def https_redirect():
         if os.environ.get('FLASK_ENV') == 'production':
@@ -57,7 +56,7 @@ def create_app():
                 url = request.url.replace('http://', 'https://', 1)
                 return redirect(url, code=301)
 
-    # CSRF cookie injection
+    # Inject CSRF token into cookies
     @app.after_request
     def inject_csrf_token(response):
         response.set_cookie(
@@ -69,6 +68,7 @@ def create_app():
         )
         return response
 
+    # Docs and static route support
     @app.route("/api/csrf/restore")
     def restore_csrf():
         return {"message": "CSRF cookie set"}
@@ -95,19 +95,20 @@ def create_app():
     def not_found(e):
         return app.send_static_file('index.html')
 
-    # 🚀 Auto-run migrations & seeding
+    # 🚀 Run migrations + seed once
     @app.before_first_request
     def run_migrations_and_seed():
-        print("🛠️ Auto-running migrations...")
+        print("🛠️ Running DB migrations...")
         with app.app_context():
-            upgrade()
-
-            # Only seed if no users exist
-            if not User.query.first():
-                print("🌱 Running auto seed...")
-                seed()
-            else:
-                print("✅ Users already exist. Skipping seed.")
+            try:
+                upgrade()
+                if not User.query.first():
+                    print("🌱 Seeding DB...")
+                    seed()
+                else:
+                    print("✅ Users exist. Skipping seed.")
+            except Exception as e:
+                print("❌ Migration/seed error:", e)
 
     print("✅ Flask app created successfully.")
     return app
