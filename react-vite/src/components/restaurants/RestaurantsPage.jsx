@@ -179,7 +179,7 @@ export default function RestaurantsPage() {
       </div>
 
       <h2 className="section-title">All Restaurants</h2>
-
+      console.log("🧠 Restaurants state:", restaurants);
       <div className="restaurant-grid">
         {restaurants.map(renderCard)}
       </div>
