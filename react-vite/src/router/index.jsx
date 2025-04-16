@@ -8,8 +8,10 @@ import EditRestaurantForm from "../components/restaurants/EditRestaurantForm";
 import RestaurantDetailPage from "../components/restaurants/RestaurantDetailPage";
 import DashboardPage from "../components/dashboard/DashboardPage";
 import MenuItemsPage from "../components/MenuItem/MenuItemsPage/MenuItemsPage";
+import MenuItemDetails from "../components/MenuItem/MenuItemDetails/MenuItemDetails";
+import CartPage from "../components/ShoppingCart/CartPage"; // ✅ Add this
 
-// Basic fallback error element (replace with your custom design if you want)
+// Basic fallback error element
 const ErrorElement = () => (
   <div style={{ padding: "2rem", textAlign: "center" }}>
     <h1>Oops! Something went wrong 😬</h1>
@@ -30,6 +32,8 @@ export const router = createBrowserRouter([
       { path: "restaurants/:id/edit", element: <EditRestaurantForm /> },
       { path: "restaurants/:id", element: <RestaurantDetailPage /> },
       { path: "restaurants/:id/menu", element: <MenuItemsPage /> },
+      { path: "menu-items/:menuItemId", element: <MenuItemDetails /> },
+      { path: "cart", element: <CartPage /> }, // ✅ Now valid
       { path: "dashboard", element: <DashboardPage /> },
     ],
   },

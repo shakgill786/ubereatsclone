@@ -5,14 +5,14 @@ from flask_login import login_required, current_user
 cart_routes = Blueprint('cart', __name__)
 
 # View cart items
-@cart_routes.route('/cart', methods=['GET'])
+@cart_routes.route('', methods=['GET'])
 @login_required
 def get_cart_items():
     cart_items = CartItem.query.filter_by(user_id=current_user.id).all()
     return {"cart_items": [item.to_dict() for item in cart_items]}
 
 # Add an item to cart
-@cart_routes.route('/cart', methods=['POST'])
+@cart_routes.route('', methods=['POST'])
 @login_required
 def add_cart_item():
     data = request.get_json()
@@ -26,7 +26,7 @@ def add_cart_item():
     return new_item.to_dict()
 
 # Delete an item from cart
-@cart_routes.route('/cart/<int:cart_item_id>', methods=['DELETE'])
+@cart_routes.route('/<int:cart_item_id>', methods=['DELETE'])
 @login_required
 def delete_cart_item(cart_item_id):
     cart_item = CartItem.query.get_or_404(cart_item_id)
@@ -39,7 +39,7 @@ def delete_cart_item(cart_item_id):
     return {"message": "Cart item deleted successfully"}
 
 # Checkout - clear all items from cart
-@cart_routes.route('/cart/checkout', methods=['POST'])
+@cart_routes.route('/checkout', methods=['POST'])
 @login_required
 def checkout_cart():
     cart_items = CartItem.query.filter_by(user_id=current_user.id).all()

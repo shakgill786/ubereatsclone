@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom"; // ✅ FIX: useNavigate for React Router v6
+import { useNavigate } from "react-router-dom";
 import { useShoppingCart } from "../../context/ShoppingCart";
-import { getAllRestaurantsWithOneMenuItemThunk } from "../../redux/restaurant"; // ✅ FIXED import path
+import { getAllRestaurantsWithOneMenuItemThunk } from "../../redux/restaurant";
 import "./ShoppingCart.css";
 
 export default function ShoppingCart() {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // ✅ FIXED useNavigate
+  const navigate = useNavigate();
   const ulRef = useRef();
 
   const { cart, setCart } = useShoppingCart();
@@ -20,15 +20,22 @@ export default function ShoppingCart() {
   useEffect(() => {
     let newTotal = 0;
     cart.forEach((item) => {
-      newTotal += item.price;
+      newTotal += item.menu_item?.price || 0;
     });
     setTotal(newTotal);
   }, [cart]);
 
   useEffect(() => {
     dispatch(getAllRestaurantsWithOneMenuItemThunk());
-    setIsLoaded(true);
+    fetchCart();
   }, [dispatch]);
+
+  const fetchCart = async () => {
+    const res = await fetch("/api/cart", { credentials: "include" });
+    const data = await res.json();
+    setCart(data.cart_items);
+    setIsLoaded(true);
+  };
 
   useEffect(() => {
     if (!showMenu) return;
@@ -51,13 +58,16 @@ export default function ShoppingCart() {
     setShowMenu(false);
   };
 
-  const deleteItem = (e, id) => {
+  const deleteItem = async (e, id) => {
     e.stopPropagation();
-    const indexToDelete = cart.findIndex((item) => item.id === id);
-    if (indexToDelete !== -1) {
-      const newCart = [...cart];
-      newCart.splice(indexToDelete, 1);
-      setCart(newCart);
+    try {
+      await fetch(`/api/cart/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      fetchCart();
+    } catch (err) {
+      console.error("Error deleting item from cart:", err);
     }
   };
 
@@ -78,10 +88,10 @@ export default function ShoppingCart() {
                   <i className="fa-solid fa-x"></i>
                 </button>
                 <div className="cart-restaurant">
-                  {restaurants[cart[0].restaurantId]?.name}
+                  {restaurants[cart[0].menu_item?.restaurantId]?.name || "Unknown Restaurant"}
                 </div>
                 <div className="cart-restaurant-address">
-                  {restaurants[cart[0].restaurantId]?.streetAddress}
+                  {restaurants[cart[0].menu_item?.restaurantId]?.streetAddress || ""}
                 </div>
                 <div className="cart-quantity">
                   {cart.length} {cart.length === 1 ? "item" : "items"}
@@ -89,9 +99,9 @@ export default function ShoppingCart() {
                 <div className="cart-item-list">
                   {cart.map((item, idx) => (
                     <div className="item-entry" key={idx}>
-                      <div>1 {item.name}</div>
+                      <div>1 {item.menu_item?.name}</div>
                       <div className="item-entry-right">
-                        <div>${item.price.toFixed(2)}</div>
+                        <div>${item.menu_item?.price?.toFixed(2)}</div>
                         <div>
                           <button
                             className="item-entry-delete"
@@ -115,7 +125,7 @@ export default function ShoppingCart() {
                 </button>
                 <button
                   onClick={() => {
-                    navigate(`/restaurants/${cart[0].restaurantId}/menu`);
+                    navigate(`/restaurants/${cart[0].menu_item?.restaurantId}/menu`);
                     setShowMenu(false);
                   }}
                 >
@@ -134,7 +144,7 @@ export default function ShoppingCart() {
                     <img src="/emptycart.png" alt="empty cart" />
                   </div>
                   <div className="empty-card-header">
-                    Add items to start your cart
+                    {cart.length === 0 ? "Nothing in cart yet." : "Add items to start your cart"}
                   </div>
                 </div>
               </div>
