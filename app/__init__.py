@@ -95,20 +95,18 @@ def create_app():
     def not_found(e):
         return app.send_static_file('index.html')
 
-    # 🚀 Run migrations + seed once
-    @app.before_first_request
-    def run_migrations_and_seed():
-        print("🛠️ Running DB migrations...")
-        with app.app_context():
-            try:
-                upgrade()
-                if not User.query.first():
-                    print("🌱 Seeding DB...")
-                    seed()
-                else:
-                    print("✅ Users exist. Skipping seed.")
-            except Exception as e:
-                print("❌ Migration/seed error:", e)
+    with app.app_context():
+        try:
+            print("🛠️ Running DB migrations...")
+            upgrade()
+
+            if not User.query.first():
+                print("🌱 Seeding DB...")
+                seed()
+            else:
+                print("✅ Users exist. Skipping seed.")
+        except Exception as e:
+            print("❌ Migration/seed error:", e)
 
     print("✅ Flask app created successfully.")
     return app
