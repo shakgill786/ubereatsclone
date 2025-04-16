@@ -48,6 +48,20 @@ export const createMenuItemForRestThunk = (itemData) => async (dispatch) => {
   }
 };
 
+export const getOneMenuItemThunk = (id) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/menu-items/${id}`);
+    if (res.ok) {
+      const data = await res.json();
+      dispatch(setSingleMenuItem(data));
+      return data;
+    } else {
+      console.error("Failed to fetch menu item:", res.status);
+    }
+  } catch (err) {
+    console.error("❌ Error in getOneMenuItemThunk:", err);
+  }
+};
 export const updateMenuItemThunk = (menuItem) => async (dispatch) => {
   try {
     const res = await fetch(`/api/menu-items/${menuItem.id}/update`, {

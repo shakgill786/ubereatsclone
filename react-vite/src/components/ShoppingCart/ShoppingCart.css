@@ -179,3 +179,20 @@
 .cart-checkout:hover {
     border: 2px solid white !important;
 }
+
+.back-to-main-button {
+    background-color: transparent;
+    color: #7a00cc;
+    border: 2px solid #7a00cc;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .back-to-main-button:hover {
+    background-color: #7a00cc;
+    color: white;
+  }

@@ -2,16 +2,18 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Helvetica Neue', Arial, sans-serif; /* nicer font */
-  background-color: #f9f9f9; /* light gray background like UberEats */
-  color: #333; /* nice dark text */
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
+/* Anchor tags */
 a {
   text-decoration: none;
   color: inherit;
 }
 
+/* Unordered lists */
 ul {
   list-style: none;
   padding: 0;
@@ -28,7 +30,7 @@ button {
   font-weight: bold;
 }
 
-/* Input fields */
+/* Inputs */
 input, select, textarea {
   font-family: inherit;
   border: 1px solid #ccc;
@@ -40,4 +42,26 @@ input, select, textarea {
 h1, h2, h3, h4 {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   color: #111;
+}
+
+/* 🌟 Layout Container: Keeps consistent width like 90% zoom */
+.layout-wrapper {
+  width: 90%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* Responsive padding */
+@media (max-width: 768px) {
+  .layout-wrapper {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout-wrapper {
+    padding: 0 10px;
+  }
 }

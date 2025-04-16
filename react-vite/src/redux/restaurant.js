@@ -9,7 +9,7 @@ const loadRestaurants = (restaurants) => ({
   restaurants,
 });
 
-// Thunk
+// Thunks
 export const getAllRestaurantsWithOneMenuItemThunk = () => async (dispatch) => {
   const res = await fetch(`/api/restaurants`);
   if (res.ok) {
@@ -18,6 +18,22 @@ export const getAllRestaurantsWithOneMenuItemThunk = () => async (dispatch) => {
     return data;
   } else {
     console.error("Failed to fetch restaurants");
+  }
+};
+
+// ✅ Added this
+export const getOneRestaurantThunk = (id) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/restaurants/${id}`);
+    if (res.ok) {
+      const data = await res.json();
+      // optional: dispatch to set single restaurant in state
+      return data;
+    } else {
+      console.error("❌ Failed to fetch restaurant:", res.status);
+    }
+  } catch (err) {
+    console.error("❌ Error in getOneRestaurantThunk:", err);
   }
 };
 

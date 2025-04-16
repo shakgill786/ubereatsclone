@@ -45,7 +45,7 @@ def create_app():
     app.register_blueprint(favorite_routes, url_prefix='/api/favorites')
     app.register_blueprint(menu_item_routes, url_prefix='/api/menu-items')
     app.register_blueprint(image_routes, url_prefix='/api/images')
-    app.register_blueprint(cart_routes, url_prefix='/api/cart_item')
+    app.register_blueprint(cart_routes, url_prefix='/api/cart')
     app.register_blueprint(review_routes, url_prefix='/api/reviews')
 
     # Redirect to HTTPS in production

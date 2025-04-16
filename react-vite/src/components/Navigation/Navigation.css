@@ -1,78 +1,18 @@
-/* src/components/Navigation/Navigation.css */
-
+/* Base Navbar Container */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 30px;
+  padding: 12px 30px;
   background-color: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   position: sticky;
   top: 0;
   z-index: 100;
+  flex-wrap: wrap;
 }
 
-/* Logo container */
-.navbar-logo {
-  height: 100px;
-  width: auto;
-  margin-right: 10px;
-  object-fit: contain;
-}
-
-.navbar-logo img.logo {
-  height: 80px;
-  width: auto;
-  cursor: pointer;
-  transition: transform 0.3s ease, filter 0.3s ease;
-  border-radius: 50%;
-  border: 2px solid #b79a6d;
-}
-
-.navbar-logo img.logo:hover {
-  transform: scale(1.1);
-  border: 2px solid goldenrod;
-  box-shadow: 0px 4px 8px rgba(255, 215, 0, 0.5);
-}
-
-/* Optional centered title (keep if using it) */
-.navbar-title {
-  flex-grow: 1;
-  text-align: center;
-  font-family: 'Georgia', serif;
-  font-size: 2rem;
-  color: transparent;
-  background: linear-gradient(135deg, #ff3700ce, #ff6f61);
-  -webkit-background-clip: text;
-  background-clip: text;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  text-transform: uppercase;
-  animation: glow 3s infinite alternate, fadeIn 1.5s;
-  white-space: nowrap;
-}
-
-/* Large site title */
-.site-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 70px;
-  font-weight: 700;
-  color: #db8ed1;
-}
-
-/* Home Link */
-.navbar a {
-  color: #fff;
-  text-decoration: underline;
-  font-weight: bold;
-  font-size: 16px;
-  transition: color 0.3s ease;
-}
-
-.navbar a:hover {
-  color: goldenrod;
-}
-
-/* Left Side: Logo and Menu Button */
+/* Left: Logo and Menu */
 .navbar-left {
   display: flex;
   align-items: center;
@@ -88,6 +28,15 @@
   height: 45px;
   width: auto;
   object-fit: contain;
+  border-radius: 50%;
+  border: 2px solid #b79a6d;
+  transition: transform 0.3s ease, box-shadow 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+  border-color: goldenrod;
+  box-shadow: 0px 4px 8px rgba(255, 215, 0, 0.5);
 }
 
 .menu-button {
@@ -95,6 +44,14 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
+}
+
+/* Center: Title */
+.site-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 70px;
+  font-weight: 700;
+  color: #db8ed1;
 }
 
 /* Middle Section */
@@ -116,7 +73,7 @@
 
 .delivery-button {
   background-color: black;
-  color: rgb(18, 234, 18);
+  color: #db8ed1;
 }
 
 .pickup-button {
@@ -137,7 +94,7 @@
   font-size: 14px;
 }
 
-/* Right Side */
+/* Right Section */
 .navbar-right {
   display: flex;
   align-items: center;
@@ -146,19 +103,41 @@
 
 .cart-button {
   font-size: 22px;
-  color: black;
-  text-decoration: none;
+  color: #db8ed1;
   position: relative;
+  transition: transform 0.2s ease;
 }
 
-.nav-link {
+.cart-button:hover {
+  transform: scale(1.1);
+  color: #ff6f61;
+}
+
+/* Cart Badge */
+.cart-count-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #db8ed1;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: bold;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+/* User Text */
+.welcome-user {
+  font-weight: bold;
   color: black;
+}
+
+/* Buttons */
+.nav-link {
   font-weight: bold;
   text-decoration: none;
-}
-
-.nav-link:hover {
-  text-decoration: underline;
+  color: black;
 }
 
 .signup-button {
@@ -176,9 +155,9 @@
 .logout-btn {
   background-color: #f44336;
   color: white;
-  border: none;
   padding: 8px 16px;
   border-radius: 20px;
+  border: none;
   cursor: pointer;
 }
 
@@ -186,27 +165,25 @@
   background-color: #d32f2f;
 }
 
-.welcome-user {
-  font-weight: bold;
-}
-
-.dashboard-btn {
-  margin-top: 10px;
-  background-color: #333;
+.dashboard-link {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: #db8ed1;
   color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
   font-weight: bold;
+  transition: background-color 0.3s;
 }
 
-.dashboard-btn:hover {
-  background-color: #555;
+.dashboard-link:hover {
+  background-color: #ff6f61;
 }
 
-/* Responsive for smaller screens */
-@media (max-width: 768px) {
+/* Responsive Handling */
+@media (max-width: 1024px) {
+  .site-title {
+    font-size: 48px;
+  }
+
   .navbar-middle {
     display: none;
   }
