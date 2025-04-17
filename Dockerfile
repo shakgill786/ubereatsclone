@@ -43,7 +43,7 @@ COPY --from=frontend /app/frontend/dist ./react-vite/dist
 EXPOSE 10000
 
 # Use correct CMD
-CMD ["gunicorn", "-w", "4", "-k", "gthread", "-b", "0.0.0.0:10000", "wsgi:app"]
+CMD gunicorn -w 4 -k gthread -b 0.0.0.0:10000 wsgi:app
 
 
 
