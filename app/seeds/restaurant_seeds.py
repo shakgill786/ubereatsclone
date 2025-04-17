@@ -26,7 +26,7 @@ def seed_restaurants():
             address="56 Curry Blvd, Houston, TX",
             cuisine="Indian",
             user_id=3,
-            image_url="https://images.unsplash.com/photo-1604908812965-6681d7d40384"
+            image_url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRr8eckIRPUD4dyVkCHgET5u0KX2yz6o_bn2g&s"
         )
     ]
     db.session.add_all(restaurants)
