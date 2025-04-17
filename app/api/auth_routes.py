@@ -3,6 +3,7 @@ from app.models import User, db
 from app.forms import LoginForm, SignUpForm
 from flask_login import current_user, login_user, logout_user
 import traceback
+from sqlalchemy import text  # ✅ Needed for raw SQL execution
 
 auth_routes = Blueprint('auth', __name__)
 
@@ -86,3 +87,20 @@ def sign_up():
 def unauthorized():
     """Returns unauthorized response for unauthenticated access"""
     return {'errors': {'message': 'Unauthorized'}}, 401
+
+# 🚨 TEMPORARY ROUTE TO DELETE GHOST MIGRATION ON RENDER
+@auth_routes.route('/force-wipe-alembic', methods=['GET'])
+def wipe_ghost_revision():
+    """
+    Nukes ghost alembic_version entries (used to fix Render migrations).
+    DELETE ME after first successful deploy.
+    """
+    try:
+        db.session.execute(text("DELETE FROM alembic_version"))
+        db.session.commit()
+        print("✅ Successfully wiped alembic ghost revision on Render")
+        return {"message": "✅ Alembic ghost revision wiped"}, 200
+    except Exception as e:
+        db.session.rollback()
+        print("🔥 Failed to wipe alembic version:", str(e))
+        return {"error": str(e)}, 500
