@@ -42,7 +42,7 @@ COPY --from=frontend /app/frontend/dist ./react-vite/dist
 # Expose port
 EXPOSE 10000
 
-CMD ["python", "-m", "gunicorn.app.wsgiapp", "-w", "4", "-k", "gthread", "-b", "0.0.0.0:10000", "wsgi:app"]
+CMD ["gunicorn", "-w", "4", "-k", "gthread", "-b", "0.0.0.0:10000", "wsgi:app"]
 
 
 
