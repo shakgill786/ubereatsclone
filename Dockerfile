@@ -42,7 +42,7 @@ COPY --from=frontend /app/frontend/dist ./react-vite/dist
 # Expose port
 EXPOSE 8000
 
-# Run migrations, seed DB, and start server
-CMD ["sh", "-c", "flask db upgrade && gunicorn -b 0.0.0.0:8000 wsgi:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "wsgi:app"]
+
 
 
