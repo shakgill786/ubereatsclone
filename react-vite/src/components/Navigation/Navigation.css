@@ -1,22 +1,27 @@
-/* Base Navbar Container */
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 30px;
   background-color: white;
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   position: sticky;
   top: 0;
   z-index: 100;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
-/* Left: Logo and Menu */
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 12px 30px;
+  gap: 20px;
+}
+
+/* Logo + Hamburger */
 .navbar-left {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-shrink: 0;
 }
 
 .logo-link {
@@ -46,19 +51,24 @@
   cursor: pointer;
 }
 
-/* Center: Title */
+/* Center Title */
 .site-title {
   font-family: 'Poppins', sans-serif;
   font-size: 70px;
   font-weight: 700;
   color: #db8ed1;
+  flex: 1;
+  text-align: center;
 }
 
-/* Middle Section */
+/* Middle Options */
 .navbar-middle {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex: 2;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .delivery-options button {
@@ -94,11 +104,12 @@
   font-size: 14px;
 }
 
-/* Right Section */
+/* Right Nav */
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 20px;
+  flex-shrink: 0;
 }
 
 .cart-button {
@@ -113,7 +124,6 @@
   color: #ff6f61;
 }
 
-/* Cart Badge */
 .cart-count-badge {
   position: absolute;
   top: -8px;
@@ -127,13 +137,11 @@
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
-/* User Text */
 .welcome-user {
   font-weight: bold;
   color: black;
 }
 
-/* Buttons */
 .nav-link {
   font-weight: bold;
   text-decoration: none;
@@ -178,7 +186,7 @@
   background-color: #ff6f61;
 }
 
-/* Responsive Handling */
+/* 📱 Responsive Tweaks */
 @media (max-width: 1024px) {
   .site-title {
     font-size: 48px;
@@ -186,5 +194,23 @@
 
   .navbar-middle {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .navbar-right {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .site-title {
+    text-align: left;
   }
 }

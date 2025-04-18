@@ -22,15 +22,14 @@ function LoginFormPage() {
 
     const res = await dispatch(thunkLogin({ email, password }));
 
-    if (res?.errors) {
-      const messages = Array.isArray(res.errors)
-        ? res.errors
-        : Object.values(res.errors).flat();
-      setErrors(messages);
+    if (res) {
+      setErrors(["The provided credentials were invalid"]);
     } else {
       navigate("/");
     }
   };
+
+  const isDisabled = email.length < 4 || password.length < 6;
 
   return (
     <div className="login-page-container">
@@ -60,7 +59,13 @@ function LoginFormPage() {
           />
         </label>
 
-        <button type="submit" className="login-button">Log In</button>
+        <button
+          type="submit"
+          className="login-button"
+          disabled={isDisabled}
+        >
+          Log In
+        </button>
       </form>
     </div>
   );
