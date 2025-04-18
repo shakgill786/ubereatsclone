@@ -103,8 +103,12 @@ def create_app():
                 upgrade()
 
                 if not User.query.first():
-                    print("🌱 Seeding DB...")
-                    seed()
+                    print("🌱 Seeding DB (direct call)...")
+                    from app.seeds import seed_users, seed_restaurants, seed_menu_items, seed_favorites
+                    seed_users()
+                    seed_restaurants()
+                    seed_menu_items()
+                    seed_favorites()
                 else:
                     print("✅ Users exist. Skipping seed.")
             except Exception as e:
