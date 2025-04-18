@@ -5,10 +5,17 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
     FLASK_RUN_PORT = os.environ.get('FLASK_RUN_PORT')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # SQLAlchemy 1.4 no longer supports url strings that start with 'postgres'
-    # (only 'postgresql') but heroku's postgres add-on automatically sets the
-    # url in the hidden config vars to start with postgres.
-    # so the connection uri must be updated here (for production)
+    SQLALCHEMY_ECHO = True
+
+    # Fix for Heroku / Render postgres URI
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL').replace('postgres://', 'postgresql://')
-    SQLALCHEMY_ECHO = True
+
+    # ✅ Add schema search_path in production
+    if os.getenv("FLASK_ENV") == "production":
+        SCHEMA = os.environ.get("SCHEMA")
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            "connect_args": {
+                "options": f"-c search_path={SCHEMA},public"
+            }
+        }
