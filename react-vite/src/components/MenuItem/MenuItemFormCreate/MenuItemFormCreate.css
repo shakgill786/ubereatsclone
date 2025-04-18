@@ -1,0 +1,76 @@
+.menu-item-form-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .menu-item-form-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #db8ed1;
+  }
+
+  .menu-item-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .menu-item-form label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #444;
+  }
+
+  .menu-item-form input,
+  .menu-item-form select,
+  .menu-item-form textarea {
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .menu-item-form input:focus,
+  .menu-item-form select:focus,
+  .menu-item-form textarea:focus {
+    border-color: #db8ed1;
+  }
+
+  .menu-item-form textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  /* Buttons */
+  .menu-item-submit-btn {
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  .menu-item-submit-btn:hover {
+    background-color: #e25c51;
+    cursor: pointer;
+  }
+
+  .menu-item-error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: -5px;
+    margin-bottom: 5px;
+  }

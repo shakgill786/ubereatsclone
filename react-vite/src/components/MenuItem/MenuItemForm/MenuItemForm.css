@@ -1,10 +1,86 @@
-.menu-item-form-top-header {
-    font-size: 26px;
-    padding: 20px 0 10px 5px;
-}
+/* MenuItemForm.css */
 
-.menu-item-error-text {
-    color: rgba(255, 0, 0, 0.778);
-    font-size: 12px;
-    margin-left: 5px;
-}
+form {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .create-menu-item-form-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .menu-item-form-top-header {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #db8ed1;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  /* Input, Select, Textarea Fields */
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    margin-top: 0.3rem;
+  }
+
+  input[type="file"] {
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Errors */
+  .menu-item-error-text {
+    color: #ff4e4e;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+
+  /* Button Styles */
+  .create-menu-item-form-button,
+  .create-menu-item-form-button-disabled {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .create-menu-item-form-button {
+    background-color: #db8ed1;
+    color: white;
+  }
+
+  .create-menu-item-form-button:hover {
+    background-color: #c279bd;
+  }
+
+  .create-menu-item-form-button-disabled {
+    background-color: #e0e0e0;
+    color: #aaa;
+    cursor: not-allowed;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    form {
+      padding: 1.5rem;
+    }
+  }

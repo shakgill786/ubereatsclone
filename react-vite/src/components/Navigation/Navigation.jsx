@@ -1,4 +1,3 @@
-// src/components/Navigation.jsx
 import { NavLink } from "react-router-dom";
 import ProfileButton from "./ProfileButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +20,8 @@ function Navigation() {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
+
+  const totalQuantity = cart.reduce((sum, item) => sum + (item.quantity || 0), 0); // ✅ Total quantity logic
 
   return (
     <nav className="navbar">
@@ -49,8 +50,8 @@ function Navigation() {
       <div className="navbar-right">
         <NavLink to="/cart" className="cart-button">
           <i className="fa-solid fa-cart-shopping"></i>
-          {cart?.length > 0 && (
-            <span className="cart-count-badge">{cart.length}</span>
+          {totalQuantity > 0 && (
+            <span className="cart-count-badge">{totalQuantity}</span>
           )}
         </NavLink>
 

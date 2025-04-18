@@ -11,13 +11,13 @@ export default function MenuItemDetails() {
   const { menuItemId } = useParams();
   const { cart, setCart } = useShoppingCart();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [localQuantity, setLocalQuantity] = useState(1); // 🌟 Let user pick quantity before adding
 
   const sessionUser = useSelector(state => state.session.user);
   const menuItem = useSelector(state => state.menuItems.singleMenuItem || {});
   const restaurant = useSelector(state => state.restaurant.singleRestaurant || {});
-
-  const itemInCart = (menuItem) => !!cart.find(item => item.menu_item?.id === menuItem.id);
-  const restaurantInCart = (menuItem) => cart.length > 0 && menuItem.restaurantId !== cart[0].menu_item?.restaurantId;
+  const itemInCart = cart.find(item => item.menu_item?.id === menuItem.id);
+  const restaurantInCart = cart.length > 0 && menuItem.restaurantId !== cart[0].menu_item?.restaurantId;
 
   const fetchCart = async () => {
     const res = await fetch("/api/cart", { credentials: "include" });
@@ -25,26 +25,31 @@ export default function MenuItemDetails() {
     setCart(data.cart_items);
   };
 
-  const addToCart = async () => {
-    try {
+  // Add new or update existing
+  const handleCartUpdate = async () => {
+    if (itemInCart) {
+      await fetch(`/api/cart/${itemInCart.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ quantity: localQuantity })
+      });
+    } else {
       await fetch("/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ menu_item_id: menuItem.id }),
+        body: JSON.stringify({ menu_item_id: menuItem.id, quantity: localQuantity })
       });
-      fetchCart();
-    } catch (err) {
-      console.error("Error adding item:", err);
     }
+    fetchCart();
   };
 
   const removeFromCart = async () => {
-    const itemToDelete = cart.find(item => item.menu_item?.id === menuItem.id);
-    if (itemToDelete) {
-      await fetch(`/api/cart/${itemToDelete.id}`, {
+    if (itemInCart) {
+      await fetch(`/api/cart/${itemInCart.id}`, {
         method: "DELETE",
-        credentials: "include",
+        credentials: "include"
       });
       fetchCart();
     }
@@ -79,23 +84,40 @@ export default function MenuItemDetails() {
             <div className="menu-item-details-price">${menuItem.price}</div>
             <div className="menu-item-details-description">{menuItem.description}</div>
 
-            {restaurantInCart(menuItem) ? (
+            {restaurantInCart ? (
               <>
                 <p>Orders can only be placed from one restaurant at a time.</p>
                 <p>Please complete or clear your current cart to order from another restaurant.</p>
               </>
-            ) : (
-              sessionUser && !itemInCart(menuItem) && (
-                <button className="menu-item-details-add-or-remove-button" onClick={addToCart}>
-                  Add to order
-                </button>
-              )
-            )}
+            ) : sessionUser && (
+              <div className="menu-item-details-quantity-controls">
+                <label>Quantity: </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={localQuantity}
+                  onChange={(e) => setLocalQuantity(Number(e.target.value))}
+                />
 
-            {sessionUser && itemInCart(menuItem) && (
-              <button className="menu-item-details-add-or-remove-button" onClick={removeFromCart}>
-                Remove from order
-              </button>
+                <div style={{ marginTop: "10px" }}>
+                  <button
+                    className="menu-item-details-add-or-remove-button"
+                    onClick={handleCartUpdate}
+                  >
+                    {itemInCart ? "Update Cart" : "Add to Cart"}
+                  </button>
+
+                  {itemInCart && (
+                    <button
+                      className="menu-item-details-add-or-remove-button"
+                      style={{ backgroundColor: "#c0392b", borderColor: "#c0392b", marginLeft: "10px" }}
+                      onClick={removeFromCart}
+                    >
+                      Remove from Cart
+                    </button>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         </div>
