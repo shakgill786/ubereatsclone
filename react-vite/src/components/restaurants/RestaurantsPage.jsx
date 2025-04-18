@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { getCookie } from "../../utils/csrf";
-import { useSelector } from "react-redux";
 import "./RestaurantsPage.css";
 
 export default function RestaurantsPage() {
@@ -41,7 +41,7 @@ export default function RestaurantsPage() {
         const rand = Math.floor(Math.random() * 4);
         return {
           ...restaurant,
-          rating: ratings[rand],
+          rating: restaurant.average_rating || 0,
           fee: fees[rand],
           time: times[rand % 3],
           tags: tags[rand],
@@ -101,18 +101,16 @@ export default function RestaurantsPage() {
   };
 
   const renderCard = (r) => (
-    <div
-      key={r.id}
-      className="restaurant-card"
-      onClick={() => navigate(`/restaurants/${r.id}`)}
-    >
+    <div key={r.id} className="restaurant-card" onClick={() => navigate(`/restaurants/${r.id}`)}>
       <img src={r.image_url || "/restaurant-placeholder.jpg"} alt={r.name} />
       <div className="restaurant-info">
         <h3>{r.name}</h3>
         <p className="rating">⭐ {r.rating}</p>
         <p>{r.address}</p>
         <p className="tags">{r.tags?.join(", ")}</p>
-        <p>{r.time} • {r.fee}</p>
+        <p>
+          {r.time} • {r.fee}
+        </p>
 
         <div className="card-buttons" onClick={(e) => e.stopPropagation()}>
           <span
@@ -121,11 +119,7 @@ export default function RestaurantsPage() {
           >
             ♥
           </span>
-          <button
-            id={`add-to-cart-${r.id}`}
-            className="add-to-cart-btn"
-            onClick={() => handleAddToCart(r.id)}
-          >
+          <button id={`add-to-cart-${r.id}`} className="add-to-cart-btn" onClick={() => handleAddToCart(r.id)}>
             Add to Cart
           </button>
         </div>
@@ -169,19 +163,19 @@ export default function RestaurantsPage() {
 
       {/* Scroll Wrapper with Arrows */}
       <div className="scroll-wrapper">
-        <button onClick={scrollLeft} className="scroll-button">‹</button>
+        <button onClick={scrollLeft} className="scroll-button">
+          ‹
+        </button>
 
-        <div className="restaurant-scroll-row">
-          {restaurants.slice(0, 6).map(renderCard)}
-        </div>
+        <div className="restaurant-scroll-row">{restaurants.slice(0, 6).map(renderCard)}</div>
 
-        <button onClick={scrollRight} className="scroll-button">›</button>
+        <button onClick={scrollRight} className="scroll-button">
+          ›
+        </button>
       </div>
 
       <h2 className="section-title">All Restaurants</h2>
-      <div className="restaurant-grid">
-        {restaurants.map(renderCard)}
-      </div>
+      <div className="restaurant-grid">{restaurants.map(renderCard)}</div>
     </div>
   );
 }

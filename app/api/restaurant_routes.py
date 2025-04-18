@@ -1,4 +1,4 @@
-from app.models import db, Restaurant, Favorite, MenuItem
+from app.models import db, Restaurant, Favorite, MenuItem, Review
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app.models import db, Restaurant, Favorite
@@ -9,7 +9,21 @@ restaurant_routes = Blueprint('restaurants', __name__)
 @restaurant_routes.route('/')
 def get_restaurants():
     restaurants = Restaurant.query.all()
-    return jsonify([r.to_dict() for r in restaurants])
+    restaurant_list = []
+
+    for restaurant in restaurants:
+        # Calculate average rating for the restaurant
+        reviews = Review.query.filter_by(restaurant_id=restaurant.id).all()
+        if reviews:
+            avg_rating = sum([review.rating for review in reviews]) / len(reviews)
+        else:
+            avg_rating = None  # No reviews yet
+
+        restaurant_data = restaurant.to_dict()
+        restaurant_data['average_rating'] = avg_rating
+        restaurant_list.append(restaurant_data)
+
+    return jsonify(restaurant_list)
 
 @restaurant_routes.route("/<int:id>/menu-items", methods=["GET"])
 def get_menu_items_for_restaurant(id):
@@ -73,4 +87,3 @@ def favorite_restaurants():
     restaurant_ids = [f.restaurant_id for f in favorites]
     restaurants = Restaurant.query.filter(Restaurant.id.in_(restaurant_ids)).all()
     return jsonify([r.to_dict() for r in restaurants])
-
