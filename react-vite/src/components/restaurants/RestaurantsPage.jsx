@@ -102,7 +102,11 @@ export default function RestaurantsPage() {
 
   const renderCard = (r) => (
     <div key={r.id} className="restaurant-card" onClick={() => navigate(`/restaurants/${r.id}`)}>
-      <img src={r.image_url || "/restaurant-placeholder.jpg"} alt={r.name} />
+      <img
+          src={r.image_url && r.image_url.trim() !== "" ? r.image_url : "/restaurant-placeholder.jpg"}
+          alt={r.name}
+          className="restaurant-img"
+      />
       <div className="restaurant-info">
         <h3>{r.name}</h3>
         <p className="rating">⭐ {r.rating}</p>
