@@ -1,5 +1,3 @@
-// react-vite/src/components/LoginFormPage/LoginFormPage.jsx
-
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -24,6 +22,19 @@ function LoginFormPage() {
 
     if (res) {
       setErrors(["The provided credentials were invalid"]);
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleDemoLogin = async (e) => {
+    e.preventDefault();
+    setErrors([]);
+
+    const res = await dispatch(thunkLogin({ email: "demo@aa.io", password: "password" }));
+
+    if (res) {
+      setErrors(["Demo login failed."]);
     } else {
       navigate("/");
     }
@@ -65,6 +76,15 @@ function LoginFormPage() {
           disabled={isDisabled}
         >
           Log In
+        </button>
+
+        {/* ✅ Demo Login Button */}
+        <button
+          type="button"
+          className="demo-login-button"
+          onClick={handleDemoLogin}
+        >
+          Demo User
         </button>
       </form>
     </div>

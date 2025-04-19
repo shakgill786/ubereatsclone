@@ -99,7 +99,7 @@ body {
 
 .login-modal-button,
 .demo-login-button {
-  width: 90%;
+  width: 100%;
   padding: 12px;
   margin-top: 10px;
   background: linear-gradient(135deg, #ffcc00, #ff9900);
