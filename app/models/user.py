@@ -14,18 +14,19 @@ class User(db.Model, UserMixin):
     hashed_password = db.Column(db.String(255), nullable=False)
 
     favorites = db.relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
-    cart_items = db.relationship('CartItem', back_populates='user', cascade='all, delete-orphan')  # ✅ Moved inside
+    cart_items = db.relationship('CartItem', back_populates='user', cascade='all, delete-orphan')
 
+    # DO NOT return self.hashed_password here!
     @property
     def password(self):
-        return self.hashed_password
+        raise AttributeError("Password is write-only.")
 
     @password.setter
     def password(self, password):
         self.hashed_password = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.hashed_password, password)
 
     def to_dict(self):
         return {

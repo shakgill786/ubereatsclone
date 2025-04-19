@@ -17,33 +17,27 @@ def authenticate():
 @auth_routes.route('/login', methods=['POST'])
 def login():
     """Logs a user in"""
-    try:
-        form = LoginForm()
-        csrf_token = request.cookies.get("csrf_token")
-        form['csrf_token'].data = csrf_token
+    form = LoginForm()
+    form['csrf_token'].data = request.cookies.get('csrf_token')  # ✅ Get CSRF from cookie
 
-        print("🔐 Login attempt:")
-        print("📥 Request JSON:", request.json)
-        print("🍪 Cookies:", request.cookies)
-        print("🔒 CSRF token:", csrf_token)
+    data = request.get_json()  # ✅ Get JSON from request
+    form.email.data = data.get('email')
+    form.password.data = data.get('password')
 
-        if form.validate_on_submit():
-            user = User.query.filter(User.email == form.data['email']).first()
-            if not user:
-                print("❌ Invalid credentials")
-                return {"errors": ["Invalid credentials."]}, 401
+    print("🔐 Attempting login with:", data)
 
-            login_user(user)
-            print("✅ Login successful:", user.email)
-            return user.to_dict()
+    if form.validate_on_submit():
+        user = User.query.filter(User.email == form.email.data).first()
+        if not user:
+            print("❌ No user found with that email.")
+            return {"errors": ["Invalid credentials."]}, 401
 
-        print("❌ Form validation failed:", form.errors)
-        return {"errors": form.errors}, 401
+        login_user(user)
+        print("✅ Login success:", user.email)
+        return user.to_dict()
 
-    except Exception as e:
-        print("🔥 Exception in login route:", str(e))
-        traceback.print_exc()
-        return {"errors": ["Server error. Please try again."]}, 500
+    print("❌ Validation failed:", form.errors)
+    return {"errors": form.errors}, 401
 
 @auth_routes.route('/logout', methods=['POST'])
 def logout():

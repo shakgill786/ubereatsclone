@@ -16,6 +16,24 @@ from .api.review_routes import review_routes
 from .seeds import seed_commands, seed
 from .config import Config
 
+def run_migrations_and_seed(app):
+    if os.environ.get("RUN_MIGRATIONS") == "true":
+        print("🛠️ Running DB migrations...")
+        with app.app_context():
+            try:
+                upgrade()
+                if not User.query.first():
+                    print("🌱 Seeding DB (direct call)...")
+                    from app.seeds import seed_users, seed_restaurants, seed_menu_items, seed_favorites
+                    seed_users()
+                    seed_restaurants()
+                    seed_menu_items()
+                    seed_favorites()
+                else:
+                    print("✅ Users exist. Skipping seed.")
+            except Exception as e:
+                print(f"❌ Migration/seed error: {e}")
+
 def create_app():
     print("🌀 Starting create_app()...")
 
@@ -95,26 +113,8 @@ def create_app():
     def not_found(e):
         return app.send_static_file('index.html')
 
-    # ✅ Run migrations and seed at first request in production
-    @app.before_first_request
-    def run_migrations_and_seed():
-        if os.environ.get("RUN_MIGRATIONS") == "true":
-            print("🛠️ Running DB migrations...")
-            with app.app_context():
-                try:
-                    upgrade()
-
-                    if not User.query.first():
-                        print("🌱 Seeding DB (direct call)...")
-                        from app.seeds import seed_users, seed_restaurants, seed_menu_items, seed_favorites
-                        seed_users()
-                        seed_restaurants()
-                        seed_menu_items()
-                        seed_favorites()
-                    else:
-                        print("✅ Users exist. Skipping seed.")
-                except Exception as e:
-                    print(f"❌ Migration/seed error: {e}")
+    # ✅ Manually trigger seed logic here
+    run_migrations_and_seed(app)
 
     print("✅ Flask app created successfully.")
     return app
