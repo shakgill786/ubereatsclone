@@ -13,8 +13,9 @@ from .api.menu_item_routes import menu_item_routes
 from .api.image_routes import image_routes
 from .api.cart_routes import cart_routes
 from .api.review_routes import review_routes
-from .seeds import seed_commands, seed
+from .seeds import seed_commands
 from .config import Config
+
 
 def run_migrations_and_seed(app):
     if os.environ.get("RUN_MIGRATIONS") == "true":
@@ -22,17 +23,21 @@ def run_migrations_and_seed(app):
         with app.app_context():
             try:
                 upgrade()
-                if not User.query.first():
-                    print("🌱 Seeding DB (direct call)...")
+
+                # Only seed if demo user doesn't exist
+                demo_user = User.query.filter_by(email="demo@aa.io").first()
+                if not demo_user:
+                    print("🌱 Seeding demo + base data...")
                     from app.seeds import seed_users, seed_restaurants, seed_menu_items, seed_favorites
                     seed_users()
                     seed_restaurants()
                     seed_menu_items()
                     seed_favorites()
                 else:
-                    print("✅ Users exist. Skipping seed.")
+                    print("✅ Demo user already exists. Skipping seed.")
             except Exception as e:
                 print(f"❌ Migration/seed error: {e}")
+
 
 def create_app():
     print("🌀 Starting create_app()...")
@@ -113,7 +118,7 @@ def create_app():
     def not_found(e):
         return app.send_static_file('index.html')
 
-    # ✅ Manually trigger seed logic here
+    # ✅ Manually trigger Render seed logic
     run_migrations_and_seed(app)
 
     print("✅ Flask app created successfully.")
