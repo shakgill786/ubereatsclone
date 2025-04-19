@@ -13,19 +13,24 @@ const setSingleMenuItem = (item) => ({
   item,
 });
 
-// Thunks
+// ✅ Thunks
+
+// Get all menu items for a restaurant
 export const getMenuItemsForRestaurantThunk = (restaurantId) => async (dispatch) => {
   try {
     const res = await fetch(`/api/restaurants/${restaurantId}/menu-items`);
     if (res.ok) {
       const data = await res.json();
       dispatch(loadMenuItems(data.menuItems));
+    } else {
+      console.error("❌ Failed to fetch menu items:", res.status);
     }
   } catch (err) {
-    console.error("❌ Failed to load menu items:", err);
+    console.error("❌ Error fetching menu items:", err);
   }
 };
 
+// Create menu item
 export const createMenuItemForRestThunk = (itemData) => async (dispatch) => {
   try {
     const res = await fetch(`/api/menu-items/create/${itemData.restaurantId}`, {
@@ -48,6 +53,7 @@ export const createMenuItemForRestThunk = (itemData) => async (dispatch) => {
   }
 };
 
+// Get one menu item
 export const getOneMenuItemThunk = (id) => async (dispatch) => {
   try {
     const res = await fetch(`/api/menu-items/${id}`);
@@ -62,6 +68,8 @@ export const getOneMenuItemThunk = (id) => async (dispatch) => {
     console.error("❌ Error in getOneMenuItemThunk:", err);
   }
 };
+
+// Update menu item
 export const updateMenuItemThunk = (menuItem) => async (dispatch) => {
   try {
     const res = await fetch(`/api/menu-items/${menuItem.id}/update`, {
@@ -81,6 +89,26 @@ export const updateMenuItemThunk = (menuItem) => async (dispatch) => {
   } catch (err) {
     console.error("❌ Error updating menu item:", err);
     return { errors: ["Menu item update failed."] };
+  }
+};
+
+// Delete menu item
+export const deleteMenuItemThunk = (itemId, restaurantId) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/menu-items/${itemId}/delete`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      dispatch(getMenuItemsForRestaurantThunk(restaurantId));
+    } else {
+      const data = await res.json();
+      return data;
+    }
+  } catch (err) {
+    console.error("❌ Error deleting menu item:", err);
+    return { errors: ["Menu item deletion failed."] };
   }
 };
 

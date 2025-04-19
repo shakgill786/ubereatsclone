@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { getOneMenuItemThunk } from '../../../redux/menuItems';
 import { getOneRestaurantThunk } from '../../../redux/restaurant';
 import { useShoppingCart } from '../../../context/ShoppingCart';
+import OpenModalButton from '../../OpenModalButton/OpenModalButton';
+import MenuItemFormUpdate from '../MenuItemFormUpdate/MenuItemFormUpdate';
+import MenuItemDeleteModal from '../MenuItemDeleteModal/MenuItemDeleteModal';
 import './MenuItemDetails.css';
 
 export default function MenuItemDetails() {
@@ -11,7 +14,7 @@ export default function MenuItemDetails() {
   const { menuItemId } = useParams();
   const { cart, setCart } = useShoppingCart();
   const [isLoaded, setIsLoaded] = useState(false);
-  const [localQuantity, setLocalQuantity] = useState(1); // 🌟 Let user pick quantity before adding
+  const [localQuantity, setLocalQuantity] = useState(1);
 
   const sessionUser = useSelector(state => state.session.user);
   const menuItem = useSelector(state => state.menuItems.singleMenuItem || {});
@@ -25,7 +28,6 @@ export default function MenuItemDetails() {
     setCart(data.cart_items);
   };
 
-  // Add new or update existing
   const handleCartUpdate = async () => {
     if (itemInCart) {
       await fetch(`/api/cart/${itemInCart.id}`, {
@@ -74,8 +76,8 @@ export default function MenuItemDetails() {
 
         <div className="menu-item-details-card">
           <div>
-            {menuItem.imageUrl && (
-              <img className="menu-item-details-img" src={menuItem.imageUrl} alt={menuItem.name} />
+            {menuItem.image_url && (
+              <img className="menu-item-details-img" src={menuItem.image_url} alt={menuItem.name} />
             )}
           </div>
 
@@ -117,6 +119,21 @@ export default function MenuItemDetails() {
                     </button>
                   )}
                 </div>
+              </div>
+            )}
+
+            {sessionUser?.id === menuItem.user_id && (
+              <div className="menu-item-owner-actions" style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+                <OpenModalButton
+                  buttonText="Edit"
+                  modalComponent={<MenuItemFormUpdate menuItem={menuItem} />}
+                  className="menu-item-edit-btn"
+                />
+                <OpenModalButton
+                  buttonText="Delete"
+                  modalComponent={<MenuItemDeleteModal menuItemId={menuItem.id} />}
+                  className="menu-item-delete-btn"
+                />
               </div>
             )}
           </div>

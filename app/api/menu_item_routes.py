@@ -1,21 +1,24 @@
 from flask import Blueprint, request
 from ..models import db, MenuItem
 from ..forms.menu_item_form import MenuItemForm
-from flask_login import login_required
+from flask_login import login_required, current_user
 import datetime
 
 menu_item_routes = Blueprint('menu_items', __name__)
 
+# GET all menu items for a restaurant
 @menu_item_routes.route('/restaurant/<int:restaurant_id>/menu-items')
 def get_menu_items_for_restaurant(restaurant_id):
     menu_items = MenuItem.query.filter_by(restaurant_id=restaurant_id).all()
     return {"menuItems": [item.to_dict() for item in menu_items]}
 
+# GET one menu item by ID
 @menu_item_routes.route('/<int:id>', methods=['GET'])
 def get_menu_item(id):
     menu_item = MenuItem.query.get(id)
     return menu_item.to_dict()
 
+# UPDATE a menu item
 @menu_item_routes.route('/<int:id>/update', methods=['PUT'])
 @login_required
 def update_menu_item(id):
@@ -23,6 +26,9 @@ def update_menu_item(id):
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
         item = MenuItem.query.get(id)
+        if not item:
+            return {"error": "Menu item not found"}, 404
+
         item.name = form.data['name']
         item.type = form.data['type']
         item.price = form.data['price']
@@ -33,14 +39,18 @@ def update_menu_item(id):
         return item.to_dict()
     return {"errors": form.errors}, 400
 
+# DELETE a menu item
 @menu_item_routes.route('/<int:id>/delete', methods=['DELETE'])
 @login_required
 def delete_menu_item(id):
     item = MenuItem.query.get(id)
+    if not item:
+        return {"error": "Menu item not found"}, 404
     db.session.delete(item)
     db.session.commit()
     return {"message": "Successfully deleted menu item", "id": id}
 
+# CREATE a menu item
 @menu_item_routes.route('/create/<int:restaurant_id>', methods=['POST'])
 @login_required
 def create_menu_item(restaurant_id):

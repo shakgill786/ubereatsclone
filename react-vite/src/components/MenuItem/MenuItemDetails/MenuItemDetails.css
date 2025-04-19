@@ -1,119 +1,156 @@
 .menu-item-details-outermost-box {
-    margin: 0px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  margin: 0px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .menu-item-details-centering-box {
-    width: 70%;
-    max-width: 900px;
-  }
+.menu-item-details-centering-box {
+  width: 70%;
+  max-width: 900px;
+}
 
-  .menu-item-details-card {
-    width: 100%;
-    padding-bottom: 20px;
-    margin: 20px 0px;
-    display: flex;
-    flex-wrap: wrap;
-  }
+.menu-item-details-card {
+  width: 100%;
+  padding-bottom: 20px;
+  margin: 20px 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
 
-  .menu-item-details-img {
-    background-color: #d2d2d2;
-    width: 300px;
-    height: 300px;
-    margin-right: 20px;
-    object-fit: cover;
-    border-radius: 12px;
-  }
+.menu-item-details-img {
+  background-color: #d2d2d2;
+  width: 300px;
+  height: 300px;
+  margin-right: 20px;
+  object-fit: cover;
+  border-radius: 12px;
+}
 
-  .menu-item-details-info {
-    flex: 1;
-    min-width: 250px;
-  }
+.menu-item-details-info {
+  flex: 1;
+  min-width: 250px;
+}
 
-  .menu-item-details-name {
-    color: #000000;
-    font-size: 34px;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
+.menu-item-details-name {
+  color: #000000;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
 
-  .menu-item-details-price {
-    color: #000000;
-    font-size: 18px;
-    font-weight: 500;
-    margin: 10px 0;
-  }
+.menu-item-details-price {
+  color: #000000;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 10px 0;
+}
 
-  .menu-item-details-description {
-    color: #7b7b7b;
-    font-size: 15px;
-    font-weight: 400;
-    margin-bottom: 20px;
-    line-height: 1.5;
-  }
+.menu-item-details-description {
+  color: #7b7b7b;
+  font-size: 15px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
 
-  .menu-item-details-add-or-remove-button {
-    background-color: #000000;
-    color: #ffffff;
-    font-size: 16px;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    font-weight: bold;
-    transition: all 0.2s ease;
-  }
+.menu-item-details-add-or-remove-button {
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
 
-  .menu-item-details-add-or-remove-button:hover {
-    background-color: #333;
-    cursor: pointer;
-  }
+.menu-item-details-add-or-remove-button:hover {
+  background-color: #333;
+  cursor: pointer;
+}
 
-  /* Back link styling */
-  .back-restaurants-mi {
-    margin-bottom: 15px;
-    color: #db8ed1;
-    font-weight: 600;
-  }
+/* Back link styling */
+.back-restaurants-mi {
+  margin-bottom: 15px;
+  color: #db8ed1;
+  font-weight: 600;
+}
 
-  .back-restaurants-mi:hover {
-    cursor: pointer;
-    text-decoration: underline;
-  }
+.back-restaurants-mi:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
 
-  /* ✅ Quantity Controls */
-  .menu-item-details-quantity-controls {
-    margin-top: 20px;
-  }
+/* ✅ Quantity Controls */
+.menu-item-details-quantity-controls {
+  margin-top: 20px;
+}
 
-  .quantity-control-group {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 10px;
-  }
+.quantity-control-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
 
-  .quantity-control-group button {
-    background-color: #db8ed1;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    transition: background-color 0.2s ease;
-  }
+.quantity-control-group button {
+  background-color: #db8ed1;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  transition: background-color 0.2s ease;
+}
 
-  .quantity-control-group button:hover {
-    background-color: #ff6f61;
-    cursor: pointer;
-  }
+.quantity-control-group button:hover {
+  background-color: #ff6f61;
+  cursor: pointer;
+}
 
-  .quantity-control-group span {
-    font-size: 18px;
-    font-weight: 600;
-    min-width: 30px;
-    text-align: center;
-    color: #000000;
-  }
+.quantity-control-group span {
+  font-size: 18px;
+  font-weight: 600;
+  min-width: 30px;
+  text-align: center;
+  color: #000000;
+}
+
+/* ✅ Owner-only Edit/Delete buttons */
+.menu-item-owner-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.menu-item-edit-btn button,
+.menu-item-delete-btn button {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.menu-item-edit-btn button {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.menu-item-edit-btn button:hover {
+  background-color: #c8e6c9;
+}
+
+.menu-item-delete-btn button {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.menu-item-delete-btn button:hover {
+  background-color: #ffcdd2;
+}

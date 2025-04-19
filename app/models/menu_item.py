@@ -33,5 +33,6 @@ class MenuItem(db.Model):
             "price": self.price,
             "description": self.description,
             "imageUrl": self.image_url,
-            "restaurantId": self.restaurant_id
+            "restaurantId": self.restaurant_id,
+            "user_id": self.restaurant.user_id
         }

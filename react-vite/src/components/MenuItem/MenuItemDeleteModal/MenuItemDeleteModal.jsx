@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
-import { useModal } from "../../context/Modal";
-import { deleteImageFileMenuItem } from "../../store/image";
-import { deleteMenuItemThunk } from "../../store/menuItems";
+import { useModal } from "../../../context/Modal"; // ✅ Corrected path
+import { deleteImageFileMenuItem } from "../../../redux/image";
+import { deleteMenuItemThunk } from "../../../redux/menuItems";
 import "./MenuItemDeleteModal.css";
 
 export default function MenuItemDeleteModal({ menuItemId }) {

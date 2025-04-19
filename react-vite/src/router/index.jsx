@@ -32,6 +32,7 @@ export const router = createBrowserRouter([
       { path: "restaurants/:id/edit", element: <EditRestaurantForm /> },
       { path: "restaurants/:id", element: <RestaurantDetailPage /> },
       { path: "restaurants/:id/menu", element: <MenuItemsPage /> },
+      { path: "restaurants/:id/menu/manage", element: <MenuItemsPage /> },
       { path: "menu-items/:menuItemId", element: <MenuItemDetails /> },
       { path: "cart", element: <CartPage /> }, // ✅ Now valid
       { path: "dashboard", element: <DashboardPage /> },

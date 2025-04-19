@@ -1,59 +1,40 @@
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import OpenModalButton from '../../components/OpenModalButton';
-import MenuItemDeleteModal from '../MenuItemDeleteModal';
-import MenuItemFormUpdate from '../MenuItemFormUpdate';
-import './MenuItemCardOwner.css';
+import { useEffect, useState } from "react";
+import OpenModalButton from "../../OpenModalButton/OpenModalButton";
+import MenuItemDeleteModal from "../MenuItemDeleteModal/MenuItemDeleteModal";
+import MenuItemFormUpdate from "../MenuItemFormUpdate/MenuItemFormUpdate";
+import "./MenuItemCardOwner.css";
 
 export default function MenuItemCardOwner({ menuItem }) {
-    const dispatch = useDispatch();
-    const menuItemId = menuItem.id;
-    const restaurantId = menuItem.restaurantId;
-    const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-    useEffect(() => {
-        setIsLoaded(true);
-    }, [dispatch])
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
-    return (
-        <>
-            {isLoaded && (
-                <div id="menu-item-owner-card">
-                    <div>
-                        ###add image of menu-item-owner-card
-                    </div>
-                    <div id="menu-item-ownder-info">
-                        <span id="menu-item-ownder-info-col-1">
-                            <div id="menu-item-owner-name">
-                                {menuItem.name}
-                            </div>
-                            <div id="menu-item-owner-price">
-                                ${menuItem.price}
-                            </div>
-                        </span>
-                        <span id="menu-item-owner-info-col-2">
-                            <span className="menu-item-form-update-and-delete-modal-btns">
-                                <OpenModalButton
-                                    buttonText="Update"
-                                    modalComponent={
-                                        <MenuItemFormUpdate
-                                            menuItem={menuItem}
-                                        />}
-                                />
-                            </span>
-                            <span className="menu-item-form-update-and-delete-modal-btns">
-                                <OpenModalButton
-                                    buttonText="Delete"
-                                    modalComponent={<MenuItemDeleteModal
-                                        menuItemId={menuItemId}
-                                        restaurantId={restaurantId}
-                                    />}
-                                />
-                            </span>
-                        </span>
-                    </div>
-                </div>
-            )}
-        </>
+  return (
+    isLoaded && (
+      <div className="menu-item-card-owner">
+        <img
+          src={menuItem.image_url}
+          alt={menuItem.name}
+          className="menu-item-img"
+        />
+        <div className="menu-item-name">{menuItem.name}</div>
+        <div className="menu-item-price">${menuItem.price}</div>
+
+        <div className="menu-item-owner-buttons">
+          <OpenModalButton
+            buttonText="Edit"
+            className="edit-menu-item-btn"
+            modalComponent={<MenuItemFormUpdate menuItem={menuItem} />}
+          />
+          <OpenModalButton
+            buttonText="Delete"
+            className="delete-menu-item-btn"
+            modalComponent={<MenuItemDeleteModal menuItemId={menuItem.id} />}
+          />
+        </div>
+      </div>
     )
+  );
 }

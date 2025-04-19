@@ -1,63 +1,80 @@
-#menu-item-owner-card {
-    width: 300px;
-    padding: 8px 8px 10px 8px;
+.menu-item-card-owner {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    width: 270px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-}
-
-#menu-item-owner-info {
-    display: flex;
-    flex-direction: row;
     justify-content: space-between;
-}
+    transition: transform 0.2s ease;
+  }
 
-#menu-item-owner-info-col-1 {
-    display: flex;
-    flex-direction: column;
-}
+  .menu-item-card-owner:hover {
+    transform: translateY(-3px);
+  }
 
-#menu-item-owner-info-col-2 {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-#menu-item-owner-card:hover {
-    box-shadow: 0px 4px 15px #e5e5e5;
-}
-
-#menu-item-owner-img {
-    background-color: #d2d2d2;
-    width: 300px;
-    height: 190px;
-    margin-right: 15px;
+  .menu-item-img {
+    width: 100%;
+    height: 180px;
     object-fit: cover;
-    border-radius: 7px;
-}
+  }
 
-#menu-item-owner-name {
-    color: black;
-    font-size: 16px;
-    margin: 2px 0;
-}
+  .menu-item-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 10px 15px 5px 15px;
+    color: #333;
+    text-align: center;
+  }
 
-#menu-item-owner-price {
-    color: black;
-    font-size: 13.5px;
-    font-weight: 100;
-}
+  .menu-item-price {
+    font-size: 1rem;
+    color: #888;
+    margin: 0 0 15px 0;
+    text-align: center;
+  }
 
-.menu-item-form-update-and-delete-modal-btns button {
-    color: #000000;
-    background-color: rgb(219, 219, 219);
-    font-size: 17px;
-    padding: 10px 12px;
-    margin: 10px 0;
-    border-radius: 7px;
+  .menu-item-owner-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 15px 15px;
+  }
+
+  /* Reuse the same classes used in MenuItemsPage.css */
+  .edit-menu-item-btn {
+    background-color: #e0f7fa;
+    color: #007bff;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 8px 12px;
     border: none;
-}
-
-.menu-item-form-update-and-delete-modal-btns button:hover {
+    border-radius: 6px;
     cursor: pointer;
-    background-color: rgb(190, 190, 190);
-}
+    transition: background-color 0.3s ease;
+    flex: 1;
+    text-align: center;
+  }
+
+  .edit-menu-item-btn:hover {
+    background-color: #b2ebf2;
+  }
+
+  .delete-menu-item-btn {
+    background-color: #ffe6e6;
+    color: #dc3545;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex: 1;
+    text-align: center;
+  }
+
+  .delete-menu-item-btn:hover {
+    background-color: #ffb3b3;
+  }
