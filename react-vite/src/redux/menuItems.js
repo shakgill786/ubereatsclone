@@ -92,8 +92,8 @@ export const updateMenuItemThunk = (menuItem) => async (dispatch) => {
   }
 };
 
-// Delete menu item
-export const deleteMenuItemThunk = (itemId, restaurantId) => async (dispatch) => {
+// ✅ Delete menu item
+export const deleteMenuItemThunk = (itemId) => async (dispatch, getState) => {
   try {
     const res = await fetch(`/api/menu-items/${itemId}/delete`, {
       method: "DELETE",
@@ -101,7 +101,12 @@ export const deleteMenuItemThunk = (itemId, restaurantId) => async (dispatch) =>
     });
 
     if (res.ok) {
-      dispatch(getMenuItemsForRestaurantThunk(restaurantId));
+      const { menuItems } = getState();
+      const deletedItem = menuItems.allMenuItems.find((item) => item.id === itemId);
+      if (deletedItem?.restaurantId) {
+        dispatch(getMenuItemsForRestaurantThunk(deletedItem.restaurantId));
+      }
+      return { message: "Menu item deleted" };
     } else {
       const data = await res.json();
       return data;

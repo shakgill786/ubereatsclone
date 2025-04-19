@@ -7,7 +7,6 @@ import "./RestaurantsPage.css";
 export default function RestaurantsPage() {
   const [restaurants, setRestaurants] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [cart, setCart] = useState([]);
   const navigate = useNavigate();
   const user = useSelector((state) => state.session.user);
 
@@ -79,15 +78,6 @@ export default function RestaurantsPage() {
     }
   };
 
-  const handleAddToCart = (id) => {
-    setCart((prev) => [...prev, id]);
-    const button = document.getElementById(`add-to-cart-${id}`);
-    if (button) {
-      button.classList.add("bounce");
-      setTimeout(() => button.classList.remove("bounce"), 600);
-    }
-  };
-
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this restaurant?")) return;
     const res = await fetch(`/api/restaurants/${id}`, {
@@ -103,18 +93,16 @@ export default function RestaurantsPage() {
   const renderCard = (r) => (
     <div key={r.id} className="restaurant-card" onClick={() => navigate(`/restaurants/${r.id}`)}>
       <img
-          src={r.image_url && r.image_url.trim() !== "" ? r.image_url : "/restaurant-placeholder.jpg"}
-          alt={r.name}
-          className="restaurant-img"
+        src={r.image_url && r.image_url.trim() !== "" ? r.image_url : "/restaurant-placeholder.jpg"}
+        alt={r.name}
+        className="restaurant-img"
       />
       <div className="restaurant-info">
         <h3>{r.name}</h3>
         <p className="rating">⭐ {r.rating}</p>
         <p>{r.address}</p>
         <p className="tags">{r.tags?.join(", ")}</p>
-        <p>
-          {r.time} • {r.fee}
-        </p>
+        <p>{r.time} • {r.fee}</p>
 
         <div className="card-buttons" onClick={(e) => e.stopPropagation()}>
           <span
@@ -123,9 +111,6 @@ export default function RestaurantsPage() {
           >
             ♥
           </span>
-          <button id={`add-to-cart-${r.id}`} className="add-to-cart-btn" onClick={() => handleAddToCart(r.id)}>
-            Add to Cart
-          </button>
         </div>
 
         {user && user.id === r.user_id && (
