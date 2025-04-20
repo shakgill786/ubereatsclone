@@ -19,22 +19,26 @@ from .config import Config
 
 def run_migrations_and_seed(app):
     if os.environ.get("RUN_MIGRATIONS") == "true":
-        print("🛠️ Running DB migrations...")
+        print("🛠️ Running DB migrations & seed check...")
+
         with app.app_context():
             try:
                 upgrade()
 
                 # Only seed if demo user doesn't exist
                 demo_user = User.query.filter_by(email="demo@aa.io").first()
-                if not demo_user:
-                    print("🌱 Seeding demo + base data...")
-                    from app.seeds import seed_users, seed_restaurants, seed_menu_items, seed_favorites
-                    seed_users()
-                    seed_restaurants()
-                    seed_menu_items()
-                    seed_favorites()
-                else:
-                    print("✅ Demo user already exists. Skipping seed.")
+                if demo_user:
+                    print("✅ Demo user found. Skipping auto-seed.")
+                    return
+
+                print("🌱 Seeding demo + base data...")
+                from app.seeds import seed_users, seed_restaurants, seed_menu_items, seed_favorites
+                seed_users()
+                seed_restaurants()
+                seed_menu_items()
+                seed_favorites()
+                print("✅ Seeding complete.")
+
             except Exception as e:
                 print(f"❌ Migration/seed error: {e}")
 
@@ -118,7 +122,8 @@ def create_app():
     def not_found(e):
         return app.send_static_file('index.html')
 
-    
+    # 🔁 Trigger seed logic manually if env flag is set
+    run_migrations_and_seed(app)
 
     print("✅ Flask app created successfully.")
     return app
