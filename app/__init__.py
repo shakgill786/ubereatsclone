@@ -118,8 +118,7 @@ def create_app():
     def not_found(e):
         return app.send_static_file('index.html')
 
-    # ✅ Manually trigger Render seed logic
-    run_migrations_and_seed(app)
+    
 
     print("✅ Flask app created successfully.")
     return app
