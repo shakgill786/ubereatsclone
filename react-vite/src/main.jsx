@@ -16,11 +16,11 @@ if (import.meta.env.MODE !== "production") {
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  //<React.StrictMode>
     <ReduxProvider store={store}>
       <ShoppingCartProvider>
         <RouterProvider router={router} />
       </ShoppingCartProvider>
     </ReduxProvider>
-  </React.StrictMode>
+  //</React.StrictMode>
 );
