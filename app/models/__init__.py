@@ -1,8 +1,21 @@
-from .db import db
+from .db import db, environment, SCHEMA, add_prefix_for_prod
+
 from .user import User
 from .restaurant import Restaurant
-from .favorites import Favorite
 from .menu_item import MenuItem
+from .favorites import Favorite
 from .cart_item import CartItem
 from .review import Review
-from .db import environment, SCHEMA
+
+__all__ = [
+    "db",
+    "environment",
+    "SCHEMA",
+    "add_prefix_for_prod",
+    "User",
+    "Restaurant",
+    "MenuItem",
+    "Favorite",
+    "CartItem",
+    "Review",
+]
